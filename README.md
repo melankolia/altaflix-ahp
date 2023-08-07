@@ -1,0 +1,31 @@
+# digital-school
+
+## Project setup
+```
+yarn install
+```
+
+### Compiles and hot-reloads for development
+```
+yarn serve
+```
+
+### Compiles and minifies for production
+```
+yarn build
+```
+
+### Lints and fixes files
+```
+yarn lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Live Demo
+You can see Live Demo Here [https://digital-school.netlify.app/](https://digital-school.netlify.app/)
+```
+username: devhanif
+password: inihanif
+```
