@@ -25,7 +25,6 @@ export default {
   },
   data() {
     return {
-
       tab: 0,
       tabs: [
         { text: "Setting Bobot Nilai Kriteria", val: "all" },
@@ -162,11 +161,6 @@ export default {
       }, 2000);
     },
   },
-  watch: {
-    tab(e) {
-      console.log(e);
-    }
-  }
 };
 </script>
 

@@ -35,6 +35,10 @@ const UpdateKaryawan = () => import("@/views/Karyawan/Create");
 
 const PerhitunganAHP = () => import("@/views/PerhitunganAHP");
 
+const Penilaian = () => import("@/views/Penilaian");
+const PenilaianDetail = () => import("@/views/Penilaian/Detail");
+const UpdatePenilaian = () => import("@/views/Penilaian/Create");
+
 import {
   HOME,
   ABOUT,
@@ -47,6 +51,7 @@ import {
   KRITERIA,
   KARYAWAN,
   AHP,
+  PENILAIAN,
 } from "./name.types";
 
 export const configRoutes = [
@@ -65,148 +70,6 @@ export const configRoutes = [
           requiresAuth: false,
         },
       },
-      // {
-      //   path: "/kelas",
-      //   component: {
-      //     render(c) {
-      //       return c("router-view");
-      //     },
-      //   },
-      //   children: [
-      //     {
-      //       path: "/",
-      //       name: SISWA.KELAS.BROWSE,
-      //       component: Kelas,
-      //       meta: {
-      //         requiresAuth: false,
-      //       },
-      //     },
-      //     {
-      //       path: "create",
-      //       name: SISWA.KELAS.CREATE,
-      //       component: CreateKelas,
-      //       meta: {
-      //         requiresAuth: false,
-      //       },
-      //     },
-      //     {
-      //       path: "update/:kelasId",
-      //       name: SISWA.KELAS.UPDATE,
-      //       component: CreateKelas,
-      //       meta: {
-      //         requiresAuth: false,
-      //       },
-      //     },
-      //     {
-      //       path: "siswa",
-      //       component: {
-      //         render(c) {
-      //           return c("router-view");
-      //         },
-      //       },
-      //       children: [
-      //         {
-      //           path: "create/:kelasId",
-      //           name: SISWA.KELAS.SISWA.CREATE,
-      //           component: CreateSiswa,
-      //           meta: {
-      //             requiresAuth: false,
-      //           },
-      //         },
-      //         {
-      //           path: "detail/:secureId",
-      //           name: SISWA.KELAS.SISWA.DETAIL,
-      //           component: KelasSiswaDetail,
-      //           meta: {
-      //             requiresAuth: false,
-      //           },
-      //         },
-      //         {
-      //           path: "update-kompetensi/:siswaId/:kelasId",
-      //           name: SISWA.KELAS.SISWA.UPDATE_KOMPETENSI,
-      //           component: UpdateKompetensiSiswa,
-      //           meta: {
-      //             requiresAuth: false,
-      //           },
-      //         },
-      //         {
-      //           path: "update/:secureId/:kelasId",
-      //           name: SISWA.KELAS.SISWA.UPDATE,
-      //           component: CreateSiswa,
-      //           meta: {
-      //             requiresAuth: false,
-      //           },
-      //         },
-      //         {
-      //           path: "prestasi/create/:siswaId",
-      //           name: SISWA.KELAS.SISWA.CREATE_PRESTASI,
-      //           component: CreatePrestasiSiswa,
-      //           meta: {
-      //             requiresAuth: false,
-      //           },
-      //         },
-      //         {
-      //           path: "prestasi/update/:prestasiId",
-      //           name: SISWA.KELAS.SISWA.UPDATE_PRESTASI,
-      //           component: CreatePrestasiSiswa,
-      //           meta: {
-      //             requiresAuth: false,
-      //           },
-      //         },
-      //         {
-      //           path: "prestasi/:siswaId",
-      //           name: SISWA.KELAS.SISWA.PRESTASI,
-      //           component: PrestasiSiswa,
-      //           meta: {
-      //             requiresAuth: false,
-      //           },
-      //         },
-      //         {
-      //           path: ":siswaId/:kelasId",
-      //           name: SISWA.KELAS.SISWA.TABEL_KOMPETENSI,
-      //           component: TabelKompetensiSiswa,
-      //           meta: {
-      //             requiresAuth: false,
-      //           },
-      //         },
-      //         {
-      //           path: ":kelasId",
-      //           name: SISWA.KELAS.PER_KELAS,
-      //           component: KelasPerSiswa,
-      //           meta: {
-      //             requiresAuth: false,
-      //           },
-      //         },
-      //       ],
-      //     },
-      //   ],
-      // },
-      // {
-      //   path: "/siswa",
-      //   component: {
-      //     render(c) {
-      //       return c("router-view");
-      //     },
-      //   },
-      //   children: [
-      //     {
-      //       path: "/",
-      //       name: SISWA.ALL.BROWSE,
-      //       component: Siswa,
-      //       meta: {
-      //         requiresAuth: false,
-      //       },
-      //     },
-      //     {
-      //       path: "/rekapitulasi",
-      //       name: SISWA.REKAPITULASI.BROWSE,
-      //       component: RekapitulasiSiswa,
-      //       meta: {
-      //         requiresAuth: false,
-      //       },
-      //     },
-      //   ],
-      // },
       {
         path: "/user",
         component: {
@@ -385,80 +248,6 @@ export const configRoutes = [
           },
         ],
       },
-      // {
-      //   path: "/alumni",
-      //   component: {
-      //     render(c) {
-      //       return c("router-view");
-      //     },
-      //   },
-      //   children: [
-      //     {
-      //       path: "/",
-      //       name: ALUMNI.ALL.BROWSE,
-      //       component: Siswa,
-      //       meta: {
-      //         requiresAuth: false,
-      //       },
-      //     },
-      //     {
-      //       path: "create/:kelasId",
-      //       name: ALUMNI.CREATE,
-      //       component: CreateSiswa,
-      //       meta: {
-      //         requiresAuth: false,
-      //       },
-      //     },
-      //     {
-      //       path: "detail/:secureId",
-      //       name: ALUMNI.DETAIL,
-      //       component: KelasSiswaDetail,
-      //       meta: {
-      //         requiresAuth: false,
-      //       },
-      //     },
-      //     {
-      //       path: "update-kompetensi/:siswaId/:kelasId",
-      //       name: ALUMNI.UPDATE_KOMPETENSI,
-      //       component: UpdateKompetensiSiswa,
-      //       meta: {
-      //         requiresAuth: false,
-      //       },
-      //     },
-      //     {
-      //       path: "update/:secureId/:kelasId",
-      //       name: ALUMNI.UPDATE,
-      //       component: CreateSiswa,
-      //       meta: {
-      //         requiresAuth: false,
-      //       },
-      //     },
-      //     {
-      //       path: "prestasi/create/:siswaId",
-      //       name: ALUMNI.CREATE_PRESTASI,
-      //       component: CreatePrestasiSiswa,
-      //       meta: {
-      //         requiresAuth: false,
-      //       },
-      //     },
-      //     {
-      //       path: "prestasi/:siswaId",
-      //       name: ALUMNI.PRESTASI,
-      //       component: PrestasiSiswa,
-      //       meta: {
-      //         requiresAuth: false,
-      //       },
-      //     },
-      //     {
-      //       path: ":siswaId/:kelasId",
-      //       name: ALUMNI.TABEL_KOMPETENSI,
-      //       component: TabelKompetensiSiswa,
-      //       meta: {
-      //         requiresAuth: false,
-      //       },
-      //     },
-      //   ],
-      // },
       {
         path: "/ahp",
         component: {
@@ -495,6 +284,48 @@ export const configRoutes = [
             path: "detail/:secureId",
             name: AHP.DETAIL,
             component: PerhitunganAHP,
+            meta: {
+              requiresAuth: false,
+            },
+          },
+        ],
+      },
+      {
+        path: "/penilaian",
+        component: {
+          render(c) {
+            return c("router-view");
+          },
+        },
+        children: [
+          {
+            path: "/",
+            name: PENILAIAN.BROWSE,
+            component: Penilaian,
+            meta: {
+              requiresAuth: false,
+            },
+          },
+          {
+            path: "update/:secureId",
+            name: PENILAIAN.UPDATE,
+            component: UpdateKaryawan,
+            meta: {
+              requiresAuth: false,
+            },
+          },
+          {
+            path: "create",
+            name: PENILAIAN.CREATE,
+            component: UpdatePenilaian,
+            meta: {
+              requiresAuth: false,
+            },
+          },
+          {
+            path: "detail/:secureId",
+            name: PENILAIAN.DETAIL,
+            component: PenilaianDetail,
             meta: {
               requiresAuth: false,
             },

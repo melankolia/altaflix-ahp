@@ -190,22 +190,85 @@ export default {
       loading: false,
       headers: [
         { value: "kriteria", sortable: false },
+      ],
+      headersHasil: [
+        { value: "kriteria", sortable: false },
+      ],
+      items: [],
+      options: {
+        page: 1,
+      },
+      totalItem: 10,
+      totalPage: 1,
+      rowsPerPageItems: [10, 20, 50, 100],
+      doubleClickPrevent: false,
+
+      // Data Table Nilai Prioritas Kriteria Properties
+      headersPrioritas: [
+        { value: "kriteria", sortable: false },
+        { text: "Bobot", value: "bobot", sortable: false },
+        { text: "Persentase", value: "persentase", sortable: false },
+      ],
+      itemsPrioritas: [],
+
+      // Data Table Rasio Konsistensi
+      headersRasio: [
+        { value: "kriteria", sortable: false },
+        { value: "value", sortable: false },
+      ],
+      itemsRasio: [
+        {
+          kriteria: "Principle Eigen Value (λ Maks)",
+          value: 4.165
+        },
+        {
+          kriteria: "Consistency Index (CI)",
+          value: 0.05
+        },
+        {
+          kriteria: "Consistency Ratio (CR)",
+          value: 0.05
+
+        }
+      ]
+    };
+  },
+  mounted() {
+    this.getData();
+  },
+  methods: {
+    getData() {
+      this.loading = true;
+      setTimeout(() => {
+        if (this.value == 'all') {
+          this.getKriteria();
+        } else {
+          this.getSubKriteria();
+        }
+        this.loading = false
+      }, 1000);
+    },
+    getKriteria() {
+      this.headers = [
+        { value: "kriteria", sortable: false },
         { text: "Prestasi Pekerjaan", value: "prestasiPekerjaan", sortable: false },
         { text: "Kemampuan Teknis", value: "kemampuanTeknis", sortable: false },
         { text: "Kedisiplinan", value: "kedisiplinan", sortable: false },
         { text: "Komunikasi", value: "komunikasi", sortable: false },
-        { text: "Kerjasama", value: "kerjaSama", sortable: false },
-      ],
-      headersHasil: [
+        { text: "Kerjasama", value: "kerjaSama", sortable: false }
+      ]
+
+      this.headersHasil = [
         { value: "kriteria", sortable: false },
         { text: "Prestasi Pekerjaan", value: "prestasiPekerjaan", sortable: false },
         { text: "Kemampuan Teknis", value: "kemampuanTeknis", sortable: false },
         { text: "Kedisiplinan", value: "kedisiplinan", sortable: false },
         { text: "Komunikasi", value: "komunikasi", sortable: false },
         { text: "Kerjasama", value: "kerjaSama", sortable: false },
-        { text: "Jumlah", value: "jumlah", sortable: false },
-      ],
-      items: [
+        { text: "Jumlah", value: "jumlah", sortable: false }
+      ]
+
+      this.items = [
         {
           kriteria: "Prestasi Pekerjaan",
           kehadiran: 99,
@@ -251,22 +314,9 @@ export default {
           prestasiPekerjaan: 5,
           jumlah: 10
         },
-      ],
-      options: {
-        page: 1,
-      },
-      totalItem: 10,
-      totalPage: 1,
-      rowsPerPageItems: [10, 20, 50, 100],
-      doubleClickPrevent: false,
+      ]
 
-      // Data Table Nilai Prioritas Kriteria Properties
-      headersPrioritas: [
-        { value: "kriteria", sortable: false },
-        { text: "Bobot", value: "bobot", sortable: false },
-        { text: "Persentase", value: "persentase", sortable: false },
-      ],
-      itemsPrioritas: [
+      this.itemsPrioritas = [
         {
           kriteria: "Prestasi Pekerjaan",
           bobot: 0.5,
@@ -291,44 +341,77 @@ export default {
           kriteria: "Kerjasama",
           bobot: 0.5,
           persentase: '51.1%'
-        },
-      ],
-
-      // Data Table Rasio Konsistensi
-      headersRasio: [
-        { value: "kriteria", sortable: false },
-        { value: "value", sortable: false },
-      ],
-      itemsRasio: [
-        {
-          kriteria: "Principle Eigen Value (λ Maks)",
-          value: 4.165
-        },
-        {
-          kriteria: "Consistency Index (CI)",
-          value: 0.05
-        },
-        {
-          kriteria: "Consistency Ratio (CR)",
-          value: 0.05
-
         }
       ]
-    };
-  },
-  mounted() {
-    this.loading = true;
-    setTimeout(() => {
-      this.loading = false
-    }, 1000);
-  },
-  methods: {
+    },
+    getSubKriteria() {
+      this.headers = [
+        { value: "kriteria", sortable: false },
+        { text: "Sangat Baik", value: "sangatBaik", sortable: false },
+        { text: "Baik", value: "baik", sortable: false },
+        { text: "Cukup", value: "cukup", sortable: false },
+      ]
 
+      this.headersHasil = [
+        { value: "kriteria", sortable: false },
+        { text: "Sangat Baik", value: "sangatBaik", sortable: false },
+        { text: "Baik", value: "baik", sortable: false },
+        { text: "Cukup", value: "cukup", sortable: false },
+        { text: "Jumlah", value: "jumlah", sortable: false }
+      ]
+
+      this.items = [
+        {
+          kriteria: "Sangat Baik",
+          sangatBaik: 1,
+          baik: 0,
+          cukup: 0,
+          jumlah: 40
+        },
+        {
+          kriteria: "Baik",
+          sangatBaik: 0,
+          baik: 1,
+          cukup: 0,
+          jumlah: 40
+        },
+        {
+          kriteria: "Cukup",
+          sangatBaik: 0,
+          baik: 0,
+          cukup: 1,
+          jumlah: 40
+        },
+      ]
+
+      this.itemsPrioritas = [
+        {
+          kriteria: "Sangat Baik",
+          bobot: 0.5,
+          persentase: '51.1%'
+        },
+        {
+          kriteria: "Baik",
+          bobot: 0.5,
+          persentase: '51.1%'
+        },
+        {
+          kriteria: "Cukup",
+          bobot: 0.5,
+          persentase: '51.1%'
+        },
+      ]
+    }
   },
   computed: {
     isAvailable() {
       return !this.loading
     },
+  },
+  watch: {
+    value(e) {
+      e && this.getData();
+    }
   }
 };
 </script>

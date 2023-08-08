@@ -76,6 +76,7 @@ import {
   PROJEK,
   KRITERIA,
   KARYAWAN,
+  PENILAIAN
 } from "@/router/name.types";
 
 export default {
@@ -134,7 +135,7 @@ export default {
           subItems: [
             {
               title: "Data Penilaian Karyawan",
-              to: { name: AHP.BROWSE },
+              to: { name: PENILAIAN.BROWSE },
             },
           ],
           active: false,

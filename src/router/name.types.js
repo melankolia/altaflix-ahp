@@ -45,8 +45,16 @@ export const KARYAWAN = {
 
 export const ahp = "perhitungan.ahp";
 export const AHP = {
-  BROWSE: `${AHP}.browse`,
-  DETAIL: `${AHP}.detail`,
-  UPDATE: `${AHP}.update`,
-  CREATE: `${AHP}.create`,
+  BROWSE: `${ahp}.browse`,
+  DETAIL: `${ahp}.detail`,
+  UPDATE: `${ahp}.update`,
+  CREATE: `${ahp}.create`,
+};
+
+export const penilaian = "penilaian";
+export const PENILAIAN = {
+  BROWSE: `${penilaian}.browse`,
+  DETAIL: `${penilaian}.detail`,
+  UPDATE: `${penilaian}.update`,
+  CREATE: `${penilaian}.create`,
 };
