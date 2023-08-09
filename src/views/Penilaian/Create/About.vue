@@ -446,6 +446,7 @@ export default {
       if (this.payload.tanggalLahir) {
         return this.$DateTime
           .fromISO(this.payload.tanggalLahir)
+          .setLocale('id')
           .toFormat("dd LLLL yyyy");
       } else return "-";
     },
@@ -453,6 +454,7 @@ export default {
       if (this.payload.tanggalMasuk) {
         return this.$DateTime
           .fromISO(this.payload.tanggalMasuk)
+          .setLocale('id')
           .toFormat("dd LLLL yyyy");
       } else return "-";
     },

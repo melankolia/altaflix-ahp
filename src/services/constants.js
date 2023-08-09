@@ -31,6 +31,14 @@ export const KRITERIA = {
   DELETE: `${kriteria}`,
 };
 
+const karyawan = "/karyawan";
+export const KARYAWAN = {
+  CREATE: `${karyawan}`,
+  BROWSE: `${karyawan}`,
+  DETAIL: `${karyawan}`,
+  DELETE: `${karyawan}`,
+};
+
 const kelas = "kelas/v1";
 export const KELAS = {
   ALL: `${kelas}/all`,

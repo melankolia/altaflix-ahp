@@ -19,8 +19,7 @@
         <input type="file" ref="file" style="display: none" accept="image/*" @change="filesChange($event.target.files)" />
       </div>
     </div>
-    <ContentNotFound message="Data Tentang Diri Tenaga Kependidikan Not Found" :loading="loading"
-      v-if="!isAvailable && isUpdate">
+    <ContentNotFound message="Data Tentang Diri Karyawan Not Found" :loading="loading" v-if="!isAvailable && isUpdate">
       <template v-slot:action>
         <v-btn @click="() => getDetail()" depressed color="header" class="rounded-lg outlined-custom">
           <v-icon class="mr-1" small>mdi-reload</v-icon>
@@ -105,20 +104,19 @@
       <v-row>
         <v-col cols="12" xs="12" sm="6">
           <p class="mb-3 title-input">Projek</p>
-          <v-select v-model="payload.namaProjek" :items="listProjek" hide-details filled solo label="Pilih Projek"
-            clearable />
+          <v-select v-model="payload.projek" :items="listProjek" hide-details filled solo label="Pilih Projek" clearable
+            item-text="namaProjek" item-value="projek_id" return-object />
         </v-col>
         <v-col cols="12" xs="12" sm="6">
           <p class="mb-3 title-input">Divisi</p>
-          <v-select v-model="payload.divisi" :items="listDivisi" hide-details filled solo label="Pilih Divisi"
-            clearable />
+          <v-select disabled v-model="payload.projek" :loading="loadingListDivisi" :items="listDivisi" hide-details filled
+            solo label="Pilih Divisi" clearable item-text="nama" item-value="divisi_id" />
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" xs="12" sm="6">
           <p class="mb-3 title-input">Jabatan</p>
-          <v-select v-model="payload.jabatan" :items="listJabatan" hide-details filled solo label="Pilih Jabatan"
-            clearable />
+          <v-text-field v-model="payload.jabatan" hide-details filled solo label="Pilih Jabatan" clearable />
         </v-col>
         <v-col cols="12" xs="12" sm="6">
           <p class="mb-3 title-input">No KTP</p>
@@ -155,8 +153,10 @@
 </template>
 
 <script>
-import { USER } from "@/router/name.types";
-import TenagaAhliService from "@/services/resources/tenaga-ahli.service";
+import { KARYAWAN } from "@/router/name.types";
+import DivisiService from "@/services/resources/divisi.service";
+import ProjekService from "@/services/resources/projek.service";
+import KaryawanService from "@/services/resources/karyawan.service";
 const ContentNotFound = () => import("../../../components/Content/NotFound");
 
 export default {
@@ -165,7 +165,7 @@ export default {
   },
   data() {
     return {
-      id: this.$route.params?.userId,
+      id: this.$route.params?.karyawanId,
       loading: false,
 
       // Jenis Kelamin Properties
@@ -175,22 +175,21 @@ export default {
       listAgama: ["Islam", "Katolik", "Protestan", "Hindu", "Buddha", "Konghucu"],
 
       // Status Pernikahan
-      listPernikahan: ["Menikah", "Belum Menikah"],
+      listPernikahan: ["Kawin", "Belum Kawin", "Cerai Hidup", "Cerai Mati"],
 
       // Pendidikan
-      listPendidikan: ["S3", "S2", "S1", "SMA", "SMK"],
+      listPendidikan: ["Strata 1", "Starata 2", "Starata 3", "SMA", "SMK"],
 
       // Status Karyawan
       listStatusKaryawan: ["Kontrak", "Tetap"],
 
-      // List Jabatan
-      listJabatan: ["Staff Adminisrasi", "Software Engineer", "HRD"],
-
       // List Divisi
-      listDivisi: ["Div. Management", "Div. Engineering"],
+      loadingListDivisi: false,
+      listDivisi: [],
 
       // Projek
-      listProjek: ["Manajemen", "FGC", "-"],
+      loadingListProjek: false,
+      listProjek: [],
 
       // Tanggal masuk menu
       tanggalMasukMenu: false,
@@ -199,6 +198,8 @@ export default {
       birthDateMenu: false,
 
       payload: {
+        karyawan_id: null,
+        files: null,
         nik: null,
         nama: null,
         jenisKelamin: null,
@@ -211,7 +212,12 @@ export default {
         pendidikanTerakhir: null,
         statusKaryawan: null,
         jabatan: null,
-        namaProjek: null,
+        projek: {
+          code: null,
+          projek_id: null,
+          divisi_id: null,
+          namaProjek: null
+        },
         noKTP: null,
         noNPWP: null,
         tanggalMasuk: null
@@ -237,42 +243,55 @@ export default {
     getDetail() {
       this.$emit("handleLoading", true);
       this.loading = true;
-      TenagaAhliService.getDetail(this.id)
-        .then(({ data: { code, data, message } }) => {
-          if (code == 200) {
+      KaryawanService.getDetail(this.id)
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
             this.payload = {
-              ...this.payload,
-              ...data,
+              karyawan_id: result.karyawan_id,
+              image: result.image,
+              nik: result.nik,
+              nama: result.nama,
+              jenisKelamin: result.jenis_kelamin,
+              tempatLahir: result.tempat_lahir,
+              // tanggalLahir: result.tanggal_lahir,
+              agama: result.agama,
+              statusPernikahan: result.status_pernikahan,
+              alamat: result.alamat,
+              noTelp: result.no_telpon,
+              pendidikanTerakhir: result.pendidikan_terakhir,
+              statusKaryawan: result.status_karyawan,
+              jabatan: result.jabatan,
+              projek: {
+                projek_id: result.projek_id,
+                divisi_id: result.divisi_id,
+                namaDivisi: result.namaDivisi,
+              },
+              noKTP: result.no_ktp,
+              noNPWP: result.npwp,
+              // tanggalMasuk: result.tanggal_masuk
             };
 
-            if (data.ttl) {
-              const ttl = data.ttl.split(", ");
-              if (ttl.length > 0 && ttl.length <= 2) {
-                this.payload.tempat_lahir = ttl[0];
-              }
-            }
-
-            if (data.image) {
-              fetch(data.image)
-                .then((response) => response.blob())
-                .then((blob) => {
-                  this.createBase64Image(blob).then((e) => {
-                    this.payload.files = blob;
-                    const doc = document.getElementById("preview-photo");
-                    doc.style.background = "none";
-                    doc.style.backgroundImage =
-                      'url("' + e.target.result + '")';
-                    doc.style.backgroundPosition = "center";
-                    doc.style.backgroundRepeat = "no-repeat";
-                    doc.style.backgroundSize = "contain";
-                  });
-                });
-            }
+            // if (data.image) {
+            //   fetch(data.image)
+            //     .then((response) => response.blob())
+            //     .then((blob) => {
+            //       this.createBase64Image(blob).then((e) => {
+            //         this.payload.files = blob;
+            //         const doc = document.getElementById("preview-photo");
+            //         doc.style.background = "none";
+            //         doc.style.backgroundImage =
+            //           'url("' + e.target.result + '")';
+            //         doc.style.backgroundPosition = "center";
+            //         doc.style.backgroundRepeat = "no-repeat";
+            //         doc.style.backgroundSize = "contain";
+            //       });
+            //     });
+            // }
           } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
               message:
-                message || "Gagal Memuat Data Tentang Diri Tenaga Kependidikan",
+                message || "Gagal Memuat Data Tentang Diri Karyawan",
               color: "error",
             });
           }
@@ -280,7 +299,7 @@ export default {
         .catch((err) => {
           this.$store.commit("snackbar/setSnack", {
             show: true,
-            message: "Gagal Memuat Data Tentang Diri Tenaga Kependidikan",
+            message: "Gagal Memuat Data Tentang Diri Karyawan",
             color: "error",
           });
           console.error(err);
@@ -292,84 +311,105 @@ export default {
     },
     handleSubmit() {
       this.$emit("handleLoading", true);
-      this.createBase64Image(this.payload.files)
-        .then((e) => {
-          const tanggal_lahir = this.$DateTime
-            .fromISO(this.payload.tanggalLahir)
-            .setLocale("id")
-            .toFormat("dd-MM-yyyy");
+      const tanggal_lahir = this.$DateTime
+        .fromISO(this.payload.tanggalLahir)
+        .setLocale("id")
+        .toFormat("dd-MM-yyyy");
 
-          console.log({ payload: this.payload });
+      const tanggal_masuk = this.$DateTime
+        .fromISO(this.payload.tanggalMasuk)
+        .setLocale("id")
+        .toFormat("dd-MM-yyyy");
 
-          const payload = {
-            image: e.target.result,
-            nama: this.payload.nama,
-            jenis_kelamin: this.payload.jenis_kelamin || "-",
-            ttl: `${this.payload.tempat_lahir}, ${tanggal_lahir}` || "-",
-            nip_karpeg: this.payload.nip_karpeg || "-",
-            pendidikan: this.payload.pendidikan || "-",
-            mulai_bertugas: this.payload.mulai_bertugas || "-",
-            jabatan: this.payload.jabatan || "-",
-            gol_pangkat: this.payload.gol_pangkat || "-",
-            tmt_pangkat: this.payload.tmt_pangkat || "-",
-            sk_pertama: this.payload.sk_pertama || "-",
-            gaji_pokok: this.payload.gaji_pokok || "-",
-            mk_gol_tahun: this.payload.mk_gol_tahun || "-",
-            mk_gol_bulan: this.payload.mk_gol_bulan || "-",
-            k_tk: this.payload.k_tk || "-",
-            yad_pangkat: this.payload.yad_pangkat || "-",
-            yad_gaji: this.payload.yad_gaji || "-",
-            nuptk: this.payload.nuptk || "-",
-          };
-          if (this.payload?.tenaga_ahli_id)
-            payload.tenaga_ahli_id = this.payload.tenaga_ahli_id;
-          TenagaAhliService.addTenagaAhli(payload)
-            .then(({ data: { success, message } }) => {
-              if (success == true) {
-                this.$store.commit("snackbar/setSnack", {
-                  show: true,
-                  message: "Berhasil Menyimpan Data Tenaga Kependidikan",
-                  color: "success",
-                });
-                this.$router.replace({ name: USER.BROWSE });
-                this.$vuetify.goTo(1, {
-                  duration: 300,
-                  offset: 0,
-                  easing: "easeInOutCubic",
-                });
-              } else {
-                this.$store.commit("snackbar/setSnack", {
-                  show: true,
-                  message:
-                    message || "Gagal Menyimpan Data Tenaga Kependidikan",
-                  color: "error",
-                });
-              }
-            })
-            .catch((err) => {
-              console.error(err);
-              this.$store.commit("snackbar/setSnack", {
-                show: true,
-                message: "Gagal Menyimpan Data Tenaga Kependidikan",
-                color: "error",
-              });
-            })
-            .finally(() => this.$emit("handleLoading", false));
+      const payload = {
+        karyawan_id: this.payload.karyawan_id,
+        agama: this.payload.agama,
+        alamat: this.payload.alamat,
+        jabatan: this.payload.jabatan,
+        jenis_kelamin: this.payload.jenisKelamin,
+        nama: this.payload.nama,
+        nik: this.payload.nik,
+        tempat_lahir: this.payload.tempatLahir,
+        tanggal_lahir,
+        status_pernikahan: this.payload.statusPernikahan,
+        no_telpon: this.payload.noTelp,
+        pendidikan_terakhir: this.payload.pendidikanTerakhir,
+        status_karyawan: this.payload.statusKaryawan,
+        projek_id: this.payload.projek?.projek_id,
+        divisi_id: this.payload.projek?.divisi_id,
+        no_ktp: this.payload.noKTP,
+        npwp: this.payload.noNPWP,
+        tanggal_masuk,
+        image: "/image/cool.jpg"
+      }
+      KaryawanService.addKaryawan(payload)
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message: "Berhasil Menyimpan Data Karyawan",
+              color: "success",
+            });
+            this.$router.replace({ name: KARYAWAN.BROWSE });
+            this.$vuetify.goTo(1, {
+              duration: 300,
+              offset: 0,
+              easing: "easeInOutCubic",
+            });
+          } else {
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message:
+                result || "Gagal Menyimpan Data Karyawan",
+              color: "error",
+            });
+          }
         })
         .catch((err) => {
           console.error(err);
-          this.$vuetify.goTo("#preview-photo", {
-            duration: 500,
-            offset: 0,
-            easing: "easeInOutCubic",
-          });
           this.$store.commit("snackbar/setSnack", {
             show: true,
-            message: "File Foto Harus Diisi",
+            message: "Gagal Menyimpan Data Karyawan",
             color: "error",
           });
-          this.$emit("handleLoading", false);
-        });
+        })
+        .finally(() => this.$emit("handleLoading", false));
+    },
+    getListDivisi() {
+      this.loadingListDivisi = true;
+      DivisiService.getList()
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            this.listDivisi = [...result]
+          }
+        })
+        .catch(err => {
+          this.$store.commit("snackbar/setSnack", {
+            show: true,
+            message: "Gagal Memuat Data Divisi",
+            color: "error",
+          });
+          console.error(err);
+        })
+        .finally(() => this.loadingListDivisi = false)
+    },
+    getListProjek() {
+      this.loadingListProjek = true;
+      ProjekService.getList()
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            this.listProjek = [...result]
+          }
+        })
+        .catch(err => {
+          this.$store.commit("snackbar/setSnack", {
+            show: true,
+            message: "Gagal Memuat Data Projek",
+            color: "error",
+          });
+          console.error(err);
+        })
+        .finally(() => this.loadingListProjek = false)
     },
   },
   computed: {
@@ -377,7 +417,7 @@ export default {
       return this.id ? true : false;
     },
     isAvailable() {
-      return this.payload?.tenaga_ahli_id;
+      return !!this.payload?.karyawan_id;
     },
     tanggalLahir() {
       if (this.payload.tanggalLahir) {
@@ -396,7 +436,16 @@ export default {
   },
   mounted() {
     this.isUpdate && this.getDetail();
+    this.getListDivisi();
+    this.getListProjek();
   },
+  watch: {
+    'payload.projek': {
+      handler(val) {
+        console.log(val);
+      }, deep: true
+    }
+  }
 };
 </script>
 

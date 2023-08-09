@@ -25,13 +25,13 @@
         <tr>
           <td>Jenis Kelamin</td>
           <td class="text-right text-sub">
-            {{ items.jenisKelamin || "-" }}
+            {{ items.jenis_kelamin || "-" }}
           </td>
         </tr>
         <tr>
           <td>Tempat, Tanggal Lahir</td>
           <td class="text-right text-sub">
-            {{ items.ttl || "-" }}
+            {{ tempat_tanggal_lahir || "-" }}
           </td>
         </tr>
         <tr>
@@ -43,7 +43,7 @@
         <tr>
           <td>Status Pernikahan</td>
           <td class="text-right text-sub">
-            {{ items.statusPernikahan || "-" }}
+            {{ items.status_pernikahan || "-" }}
           </td>
         </tr>
         <tr>
@@ -55,19 +55,19 @@
         <tr>
           <td>No Telpon</td>
           <td class="text-right text-sub">
-            {{ items.noTelp || "-" }}
+            {{ items.no_telpon || "-" }}
           </td>
         </tr>
         <tr>
           <td>Pendidikan Terakhir</td>
           <td class="text-right text-sub">
-            {{ items.pendidikanTerakhir || "-" }}
+            {{ items.pendidikan_terakhir || "-" }}
           </td>
         </tr>
         <tr>
           <td>Status Karyawan</td>
           <td class="text-right text-sub">
-            {{ items.statusKaryawan || "-" }}
+            {{ items.status_karyawan || "-" }}
           </td>
         </tr>
         <tr>
@@ -79,7 +79,7 @@
         <tr>
           <td>Divisi</td>
           <td class="text-right text-sub">
-            {{ items.divisi || "-" }}
+            {{ items.namaDivisi || "-" }}
           </td>
         </tr>
         <tr>
@@ -91,19 +91,19 @@
         <tr>
           <td>No KTP</td>
           <td class="text-right text-sub">
-            {{ items.noKTP || "-" }}
+            {{ items.no_ktp || "-" }}
           </td>
         </tr>
         <tr>
           <td>No NPWP</td>
           <td class="text-right text-sub">
-            {{ items.noNPWP || "-" }}
+            {{ items.npwp || "-" }}
           </td>
         </tr>
         <tr>
           <td>Tanggal Masuk</td>
           <td class="text-right text-sub">
-            {{ items.tanggalMasuk || "-" }}
+            {{ items.tanggal_masuk || "-" }}
           </td>
         </tr>
       </tbody>
@@ -113,7 +113,7 @@
 
 <script>
 const ContentNotFound = () => import("@/components/Content/NotFound");
-import GuruService from "@/services/resources/guru.service";
+import KaryawanService from "@/services/resources/karyawan.service";
 
 export default {
   components: {
@@ -121,28 +121,27 @@ export default {
   },
   data() {
     return {
-      id: this.$route.params?.guruId,
+      id: this.$route.params?.karyawanId,
       loading: false,
       items: {
-        nik: "1670129301239102",
-        nama: "Hamdan Maulani",
-        jenisKelamin: null,
-        tempatLahir: "Kuningan",
-        tanggalLahir: "1997-03-04",
-        agama: "Islam",
-        statusPernikahan: "Belum Menikah",
-        alamat: "Jl. Tegal Parang Utara I No.100D, RT.8/RW.5, Tegal Parang, Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12790",
-        noTelp: "081278293921",
-        pendidikanTerakhir: "S1",
-        statusKaryawan: "Tetap",
-        jabatan: "Staff Adminisrasi",
-        namaProjek: "Manajemen",
-        noKTP: "17282883910",
-        noNPWP: "8877299300022",
-        tanggalMasuk: "2019-02-17",
+        nik: null,
+        nama: null,
+        jenis_kelamin: null,
+        tempat_lahir: null,
+        tanggal_lahir: null,
+        agama: null,
+        status_pernikahan: null,
+        alamat: null,
+        noTelp: null,
+        pendidikan_terakhir: null,
+        status_karyawan: null,
+        jabatan: null,
+        namaProjek: null,
+        noKTP: null,
+        noNPWP: null,
+        tanggal_masuk: null,
         files: {},
-        jenis_kelamin: "Laki-laki",
-        divisi: "Div. Engineering"
+        namaDivisi: null
       },
     };
   },
@@ -150,40 +149,39 @@ export default {
     isAvailable() {
       return this.items?.nik;
     },
+    isUpdate() {
+      return !!this.id
+    },
+    tempat_tanggal_lahir() {
+      return `${this.items.tempat_lahir}, ${this.items.tanggal_lahir}`
+    }
   },
   methods: {
-    getDetails() {
+    getDetail() {
       this.loading = true;
-      GuruService.getDetail(this.id)
-        .then(({ data: { code, data, message } }) => {
-          if (code == 200) {
-            this.items = { ...this.items, ...data };
+      console.log(this.id);
+      KaryawanService.getDetail(this.id)
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            this.items = { ...this.items, ...result };
 
-
-            if (data.ttl) {
-              const ttl = data.ttl.split(", ");
-              let tempat_lahir, tanggal_lahir;
-              if (ttl.length > 0 && ttl.length <= 2) {
-                tempat_lahir = ttl[0];
-                tanggal_lahir = ttl[1];
-              }
-
-              this.items.ttl = `${tempat_lahir}, ${tanggal_lahir}`;
-            }
-
-            if (data.image) {
-              // Binding Image
-              const doc = document.getElementById("preview-photo");
-              doc.style.background = "none";
-              doc.style.backgroundImage = 'url("' + data.image + '")';
-              doc.style.backgroundPosition = "center";
-              doc.style.backgroundRepeat = "no-repeat";
-              doc.style.backgroundSize = "contain";
-            }
+            this.$emit("handleItem", {
+              nama: result.nama,
+              jabatan: result.jabatan,
+            })
+            // if (data.image) {
+            //   // Binding Image
+            //   const doc = document.getElementById("preview-photo");
+            //   doc.style.background = "none";
+            //   doc.style.backgroundImage = 'url("' + data.image + '")';
+            //   doc.style.backgroundPosition = "center";
+            //   doc.style.backgroundRepeat = "no-repeat";
+            //   doc.style.backgroundSize = "contain";
+            // }
           } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message: message || "Gagal Memuat Data Tentang Diri Guru",
+              message: message || "Gagal Memuat Data Tentang Diri Karyawan",
               color: "error",
             });
           }
@@ -191,20 +189,20 @@ export default {
         .catch((err) => {
           this.$store.commit("snackbar/setSnack", {
             show: true,
-            message: "Gagal Memuat Data Tentang Diri Guru",
+            message: "Gagal Memuat Data Tentang Diri Karyawan",
             color: "error",
           });
           console.error(err);
         })
         .finally(() => (this.loading = false));
     },
-    getDetail() {
+    getDetails() {
       setTimeout(() => {
         const data = {
           nik: "1670129301239102",
           nama: "Hamdan Maulani",
-          jenisKelamin: null,
-          tempatLahir: "Kuningan",
+          jenis_kelamin: null,
+          tempat_lahir: "Kuningan",
           tanggalLahir: "1997-03-04",
           agama: "Islam",
           statusPernikahan: "Belum Menikah",
@@ -218,11 +216,11 @@ export default {
           noNPWP: "8877299300022",
           tanggalMasuk: "2019-02-17",
           files: {},
-          divisi: "Div. Engineering"
+          namaDivisi: "Div. Engineering"
         };
 
         this.items = { ...this.items, ...data };
-        this.items.ttl = `${data.tempatLahir}, ${data.tanggalLahir}`;
+        this.items.ttl = `${data.tempat_lahir}, ${data.tanggalLahir}`;
 
         if (data.image) {
           // Binding Image

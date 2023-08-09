@@ -231,7 +231,7 @@ export const configRoutes = [
             },
           },
           {
-            path: "create/:karyawanId",
+            path: "create",
             name: KARYAWAN.CREATE,
             component: UpdateKaryawan,
             meta: {
@@ -239,7 +239,7 @@ export const configRoutes = [
             },
           },
           {
-            path: "detail/:secureId",
+            path: "detail/:karyawanId",
             name: KARYAWAN.DETAIL,
             component: KaryawanDetail,
             meta: {

@@ -45,11 +45,10 @@
         hide-default-footer>
         <template #header="{ props }">
           <tr class="table-header">
-            <th class="table-header-text" v-for="(head, i) in props.headers" :style="{ width: customWidth(head.value) }"
-              :key="i" :class="{
-                'rounded-l-lg': i == isFirst,
-                'rounded-r-lg': i == isLast,
-              }">
+            <th class="table-header-text" v-for="(head, i) in props.headers" :key="i" :class="{
+              'rounded-l-lg': i == isFirst,
+              'rounded-r-lg': i == isLast,
+            }">
               {{ head.text }}
             </th>
           </tr>
@@ -96,7 +95,7 @@
 </template>
 
 <script>
-import KelasService from "@/services/resources/kelas.service";
+import KaryawanService from "@/services/resources/karyawan.service";
 import { KARYAWAN } from "@/router/name.types";
 const CustomFooter = () => import("@/components/Table/Footer");
 
@@ -125,14 +124,14 @@ export default {
         { text: "Nama Karyawan", value: "nama", sortable: false, width: "321px", },
         {
           text: "Kelamin",
-          value: "jenisKelamin",
+          value: "jenis_kelamin",
           sortable: false,
         },
-        { text: "Divisi", value: "divisi", sortable: false },
+        { text: "Divisi", value: "namaDivisi", sortable: false },
         { text: "Jabatan", value: "jabatan", sortable: false },
-        { text: "Status Karyawan", value: "statusKaryawan", sortable: false },
-        { text: "Projek", value: "projek", sortable: false },
-        { text: "No Telpon", value: "noTelp", sortable: false },
+        { text: "Status Karyawan", value: "status_karyawan", sortable: false },
+        { text: "Projek", value: "namaProjek", sortable: false },
+        { text: "No Telpon", value: "no_telpon", sortable: false },
         { text: "Aksi", value: "action", sortable: false },
       ],
       items: [],
@@ -153,28 +152,22 @@ export default {
     };
   },
   methods: {
-    customWidth(head) {
-      if (head == "walikelas") return "40%";
-      else if (head == "no") return "10%";
-      else if (head == "kelas") return "22%";
-      else if (head == "tahunAjaran") return "20%";
-    },
     handleAdd() {
-      this.$router.replace({
+      this.$router.push({
         name: KARYAWAN.CREATE,
       });
     },
     handleDetail(item) {
       this.$router.push({
         name: KARYAWAN.DETAIL,
-        params: { kelasId: item.kelas_id },
+        params: { karyawanId: item.karyawan_id },
       });
     },
     handleEdit(item) {
       this.$router.replace({
         name: KARYAWAN.UPDATE,
         params: {
-          kelasId: item.kelas_id,
+          karyawanId: item.karyawan_id,
         },
       });
     },
@@ -195,22 +188,19 @@ export default {
     },
     requestDelete(item) {
       this.loading = true;
-      KelasService.deleteKelas({
-        id: item.kelas_id,
-        type: "kelas",
-      })
-        .then(({ data: { success, message } }) => {
-          if (success == true) {
+      KaryawanService.deleteKaryawan(item.karyawan_id)
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message: `Berhasil Menghapus data kelas`,
+              message: `Berhasil Menghapus data Karyawan`,
               color: "success",
             });
             this.getList();
           } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message: message || `Gagal Menghapus data kelas`,
+              message: result || `Gagal Menghapus data Karyawan`,
               color: "error",
             });
           }
@@ -219,18 +209,18 @@ export default {
           console.error(err);
           this.$store.commit("snackbar/setSnack", {
             show: true,
-            message: `Gagal Menghapus data kelas`,
+            message: `Gagal Menghapus data Karyawan`,
             color: "error",
           });
         })
         .finally(() => (this.loading = false));
     },
-    getLists() {
+    getList() {
       const { page, itemsPerPage } = this.options;
-      this.createToken(KelasService.cancelReq().source());
+      this.createToken(KaryawanService.cancelReq().source());
       this.loading = true;
       this.items = [];
-      KelasService.getAllKelas(
+      KaryawanService.getList(
         {
           search: this.search || null,
           tab: this.tabs[this.tab].val,
@@ -240,51 +230,18 @@ export default {
         },
         { cancelToken: this.cancelRequest.token }
       )
-        .then(({ data: { code, message, data, meta } }) => {
-          if (code == 200) {
-            meta = {
-              totalData: 10,
-              totalPage: 1,
-            };
-            data = [
-              {
-                nama: "Hamdan Maulana",
-                jenisKelamin: "Laki-laki",
-                divisi: "Div. Management",
-                jabatan: "Staff Administrasi",
-                statusKaryawan: "Tetap",
-                projek: "-",
-                noTelp: "08127892132"
-              },
-              {
-                nama: "Rahmawati",
-                jenisKelamin: "Pereempuan",
-                divisi: "Div. Management",
-                jabatan: "Staff Administrasi",
-                statusKaryawan: "Tetap",
-                namaProjek: "-",
-                noTelp: "08127892132"
-              },
-              {
-                nama: "Ageng Setyo Nugroho",
-                jenisKelamin: "Laki-laki",
-                divisi: "Div. Engineering",
-                jabatan: "Software Engineer",
-                statusKaryawan: "Tetap",
-                projek: "FGC",
-                noTelp: "08127892132"
-              },
-            ];
-            data.map((d, index) => {
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            result.map((d, index) => {
               d.no = itemsPerPage * (page - 1) + (index + 1);
             });
-            this.items = [...data];
-            this.totalItem = meta.totalData;
-            this.totalPage = meta.totalPage;
+            this.items = [...result];
+            this.totalItem = result.length;
+            this.totalPage = result.length / itemsPerPage;
           } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message: message || "Gagal Memuat Data Semua Kelas",
+              message: message || "Gagal Memuat Data Semua Karyawan",
               color: "error",
             });
           }
@@ -294,58 +251,11 @@ export default {
           // this.$store.commit("snackbar/setSnack", {
           //   show: true,
           //   message:
-          //     err.response?.data?.message || "Gagal Memuat Data Semua Kelas",
+          //     err.response?.data?.message || "Gagal Memuat Data Semua Karyawan",
           //   color: "error",
           // });
         })
         .finally(() => (this.loading = false));
-    },
-    getList() {
-      this.loading = true;
-      const { page, itemsPerPage } = this.options;
-
-      setTimeout(() => {
-        const meta = {
-          totalData: 10,
-          totalPage: 1,
-        };
-        const data = [
-          {
-            nama: "Hamdan Maulana",
-            jenisKelamin: "Laki-laki",
-            divisi: "Div. Management",
-            jabatan: "Staff Administrasi",
-            statusKaryawan: "Tetap",
-            projek: "-",
-            noTelp: "08127892132"
-          },
-          {
-            nama: "Rahmawati",
-            jenisKelamin: "Pereempuan",
-            divisi: "Div. Management",
-            jabatan: "Staff Administrasi",
-            statusKaryawan: "Tetap",
-            projek: "-",
-            noTelp: "08127892132"
-          },
-          {
-            nama: "Ageng Setyo Nugroho",
-            jenisKelamin: "Laki-laki",
-            divisi: "Div. Engineering",
-            jabatan: "Software Engineer",
-            statusKaryawan: "Tetap",
-            projek: "FGC",
-            noTelp: "08127892132"
-          },
-        ];
-        data.map((d, index) => {
-          d.no = itemsPerPage * (page - 1) + (index + 1);
-        });
-        this.items = [...data];
-        this.totalItem = meta.totalData;
-        this.totalPage = meta.totalPage;
-        this.loading = false;
-      }, 2000);
     },
   },
   computed: {
