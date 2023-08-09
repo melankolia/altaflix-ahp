@@ -4,6 +4,7 @@ import router from "@/router";
 import { FORCE_LOGOUT } from "@/store/constants/actions.type";
 
 const instance = axios.create({
+  // eslint-disable-next-line no-undef
   baseURL: process.env.VUE_APP_BASE_URL,
 });
 

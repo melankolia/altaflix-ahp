@@ -67,7 +67,7 @@ export const configRoutes = [
         name: HOME,
         component: Home,
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
         },
       },
       {
@@ -83,7 +83,7 @@ export const configRoutes = [
             name: USER.BROWSE,
             component: User,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -91,7 +91,7 @@ export const configRoutes = [
             name: USER.UPDATE,
             component: UpdateUser,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -99,7 +99,7 @@ export const configRoutes = [
             name: USER.CREATE,
             component: UpdateUser,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
         ],
@@ -117,7 +117,7 @@ export const configRoutes = [
             name: DIVISI.BROWSE,
             component: Divisi,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -125,7 +125,7 @@ export const configRoutes = [
             name: DIVISI.UPDATE,
             component: UpdateDivisi,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -133,7 +133,7 @@ export const configRoutes = [
             name: DIVISI.CREATE,
             component: UpdateDivisi,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
         ],
@@ -151,7 +151,7 @@ export const configRoutes = [
             name: PROJEK.BROWSE,
             component: Projek,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -159,7 +159,7 @@ export const configRoutes = [
             name: PROJEK.UPDATE,
             component: UpdateProjek,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -167,7 +167,7 @@ export const configRoutes = [
             name: PROJEK.CREATE,
             component: UpdateProjek,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
         ],
@@ -185,7 +185,7 @@ export const configRoutes = [
             name: KRITERIA.BROWSE,
             component: Kriteria,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -193,7 +193,7 @@ export const configRoutes = [
             name: KRITERIA.UPDATE,
             component: UpdateKriteria,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -201,7 +201,7 @@ export const configRoutes = [
             name: KRITERIA.CREATE,
             component: UpdateKriteria,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
         ],
@@ -219,7 +219,7 @@ export const configRoutes = [
             name: KARYAWAN.BROWSE,
             component: Karyawan,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -227,7 +227,7 @@ export const configRoutes = [
             name: KARYAWAN.UPDATE,
             component: UpdateKaryawan,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -235,7 +235,7 @@ export const configRoutes = [
             name: KARYAWAN.CREATE,
             component: UpdateKaryawan,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -243,7 +243,7 @@ export const configRoutes = [
             name: KARYAWAN.DETAIL,
             component: KaryawanDetail,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
         ],
@@ -261,7 +261,7 @@ export const configRoutes = [
             name: AHP.BROWSE,
             component: PerhitunganAHP,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -269,7 +269,7 @@ export const configRoutes = [
             name: AHP.UPDATE,
             component: PerhitunganAHP,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -277,7 +277,7 @@ export const configRoutes = [
             name: AHP.CREATE,
             component: PerhitunganAHP,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -285,7 +285,7 @@ export const configRoutes = [
             name: AHP.DETAIL,
             component: PerhitunganAHP,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
         ],
@@ -303,7 +303,7 @@ export const configRoutes = [
             name: PENILAIAN.BROWSE,
             component: Penilaian,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -311,7 +311,7 @@ export const configRoutes = [
             name: PENILAIAN.UPDATE,
             component: UpdateKaryawan,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -319,7 +319,7 @@ export const configRoutes = [
             name: PENILAIAN.CREATE,
             component: UpdatePenilaian,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
           {
@@ -327,7 +327,7 @@ export const configRoutes = [
             name: PENILAIAN.DETAIL,
             component: PenilaianDetail,
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
             },
           },
         ],
@@ -337,7 +337,7 @@ export const configRoutes = [
         name: ABOUT,
         component: About,
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
         },
       },
     ],

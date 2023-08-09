@@ -1,4 +1,4 @@
-const user = "/admin/v1";
+const user = "/user";
 export const USER = {
   LOGIN: `${user}/login`,
 };

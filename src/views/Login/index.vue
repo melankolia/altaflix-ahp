@@ -104,8 +104,8 @@ export default {
       if (this.$refs.formLogin.validate()) {
         this.loading = true;
         this[LOGIN](this.payload)
-          .then(({ status, message }) => {
-            if (status == 200) {
+          .then(({ message, result }) => {
+            if (message == "OK") {
               this.$store.commit("snackbar/setSnack", {
                 show: true,
                 message: "Login Berhasil",
@@ -115,7 +115,7 @@ export default {
             } else {
               this.$store.commit("snackbar/setSnack", {
                 show: true,
-                message: message || "Login Gagal",
+                message: result || "Login Gagal",
                 color: "error",
               });
             }

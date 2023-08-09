@@ -7,6 +7,7 @@ import auth from "./modules/auth.store";
 import detail from "./modules/detail.store";
 import snackbar from "./modules/snackbar.store";
 
+// eslint-disable-next-line no-undef
 const debug = process.env.VUE_APP_DEBUG;
 const debugPlugin = debug == "true" ? [createLogger()] : [];
 

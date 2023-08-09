@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { initialAuthState } from "../states";
 import { LOGIN } from "../constants/actions.type";
 import { SET_AUTH, PURGE_AUTH } from "../constants/mutations.type";
@@ -33,19 +34,19 @@ const mutations = {
 const actions = {
   [LOGIN](context, payload) {
     return new Promise((resolve, reject) => {
-      AuthService.login(payload, {
-        username: process.env.VUE_APP_USERNAME,
-        password: process.env.VUE_APP_PASSWORD,
-      })
-        .then(({ status, data: { data, message } }) => {
-          if (status == 200) {
+      AuthService.login(payload)
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
             context.commit(SET_AUTH, {
               isAuthenticated: true,
-              token: data,
+              token: result.token,
+              email: result.email,
+              nama_lengkap: result.nama_lengkap,
+              username: result.username
             });
-            resolve({ status, message });
+            resolve({ message, result });
           } else {
-            reject({ status, message });
+            reject({ message, result });
           }
         })
         .catch((err) => {
