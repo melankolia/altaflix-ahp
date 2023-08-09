@@ -343,6 +343,7 @@ export default {
           persentase: '51.1%'
         }
       ]
+
     },
     getSubKriteria() {
       this.headers = [

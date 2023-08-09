@@ -75,7 +75,7 @@
         </v-row>
       </div>
       <div class="d-flex flex-column table-border rounded-lg pa-4" style="width: 60%;">
-        <p class="header-subtitle font-weight-medium">Aspek Penilaian Karyawan Teladan</p>
+        <p class="header-subtitle font-weight-medium">Aspek Penilaian Kenaikan Jabatan Karyawan</p>
         <v-row v-for="(e, i) in payload.penilaian" :key="i">
           <v-col cols="12" xs="12" sm="4">
             <p class="mb-3 title-input">{{ i | camelToTitle }}</p>
@@ -87,12 +87,12 @@
             <v-text-field v-model="payload.penilaian[i].nilai" disabled hide-details filled solo />
           </v-col>
           <v-col cols="12" xs="12" sm="3">
-            <p class="mb-3 title-input">Eigen Kriteria</p>
-            <v-text-field v-model="payload.penilaian[i].eigenKriteria" disabled hide-details filled solo />
+            <p class="mb-3 title-input">Bobot Kriteria</p>
+            <v-text-field v-model="payload.penilaian[i].bobotKriteria" disabled hide-details filled solo />
           </v-col>
           <v-col cols="12" xs="12" sm="3">
-            <p class="mb-3 title-input">Eigen Subkriteria</p>
-            <v-text-field v-model="payload.penilaian[i].eigenSubkriteria" disabled hide-details filled solo />
+            <p class="mb-3 title-input">Bobot Subkriteria</p>
+            <v-text-field v-model="payload.penilaian[i].bobotSubkriteria" disabled hide-details filled solo />
           </v-col>
         </v-row>
         <div class="d-flex flex-row justify-end mx-4 my-12 mb-6 border border-t border-black">
@@ -141,32 +141,32 @@ export default {
           prestasiPekerjaan: {
             subkriteria: null,
             nilai: null,
-            eigenKriteria: null,
-            eigenSubkriteria: null
+            bobotKriteria: null,
+            bobotSubkriteria: null
           },
           kemampuanTeknis: {
             subkriteria: null,
             nilai: null,
-            eigenKriteria: null,
-            eigenSubkriteria: null
+            bobotKriteria: null,
+            bobotSubkriteria: null
           },
           kedisiplinan: {
             subkriteria: null,
             nilai: null,
-            eigenKriteria: null,
-            eigenSubkriteria: null
+            bobotKriteria: null,
+            bobotSubkriteria: null
           },
           komunikasi: {
             subkriteria: null,
             nilai: null,
-            eigenKriteria: null,
-            eigenSubkriteria: null
+            bobotKriteria: null,
+            bobotSubkriteria: null
           },
           kerjaSama: {
             subkriteria: null,
             nilai: null,
-            eigenKriteria: null,
-            eigenSubkriteria: null
+            bobotKriteria: null,
+            bobotSubkriteria: null
           },
         },
         nilaiHasil: null,
@@ -178,100 +178,100 @@ export default {
           {
             subkriteria: 'Sangat Baik',
             nilai: 90,
-            eigenKriteria: 0.511,
-            eigenSubkriteria: 0.699
+            bobotKriteria: 0.511,
+            bobotSubkriteria: 0.699
           },
           {
             subkriteria: 'Baik',
             nilai: 70,
-            eigenKriteria: 0.511,
-            eigenSubkriteria: 0.699
+            bobotKriteria: 0.511,
+            bobotSubkriteria: 0.699
           },
           {
             subkriteria: 'Cukup',
             nilai: 90,
-            eigenKriteria: 0.511,
-            eigenSubkriteria: 0.699
+            bobotKriteria: 0.511,
+            bobotSubkriteria: 0.699
           },
         ],
         kemampuanTeknis: [
           {
             subkriteria: 'Sangat Baik',
             nilai: 90,
-            eigenKriteria: 0.511,
-            eigenSubkriteria: 0.699
+            bobotKriteria: 0.511,
+            bobotSubkriteria: 0.699
           },
           {
             subkriteria: 'Baik',
             nilai: 70,
-            eigenKriteria: 0.511,
-            eigenSubkriteria: 0.699
+            bobotKriteria: 0.511,
+            bobotSubkriteria: 0.699
           },
           {
             subkriteria: 'Cukup',
             nilai: 90,
-            eigenKriteria: 0.511,
-            eigenSubkriteria: 0.699
+            bobotKriteria: 0.511,
+            bobotSubkriteria: 0.699
           },
         ],
         kedisiplinan: [
           {
             subkriteria: 'Sangat Baik',
             nilai: 90,
-            eigenKriteria: 0.511,
-            eigenSubkriteria: 0.699
+            bobotKriteria: 0.511,
+            bobotSubkriteria: 0.699
           },
           {
             subkriteria: 'Baik',
             nilai: 70,
-            eigenKriteria: 0.511,
-            eigenSubkriteria: 0.699
+            bobotKriteria: 0.511,
+            bobotSubkriteria: 0.699
           },
           {
             subkriteria: 'Cukup',
             nilai: 90,
-            eigenKriteria: 0.511,
-            eigenSubkriteria: 0.699
+            bobotKriteria: 0.511,
+            bobotSubkriteria: 0.699
           },
         ],
         komunikasi: [
           {
             subkriteria: 'Sangat Baik',
             nilai: 90,
-            eigenKriteria: 0.511,
-            eigenSubkriteria: 0.699
+            bobotKriteria: 0.511,
+            bobotSubkriteria: 0.699
           },
           {
             subkriteria: 'Baik',
             nilai: 70,
-            eigenKriteria: 0.511,
-            eigenSubkriteria: 0.699
+            bobotKriteria: 0.511,
+            bobotSubkriteria: 0.699
           },
           {
             subkriteria: 'Cukup',
             nilai: 90,
-            eigenKriteria: 0.511,
-            eigenSubkriteria: 0.699
+            bobotKriteria: 0.511,
+            bobotSubkriteria: 0.699
           },
         ],
         kerjaSama: [
           {
             subkriteria: 'Sangat Baik',
             nilai: 90,
-            eigenKriteria: 0.511,
-            eigenSubkriteria: 0.699
+            bobotKriteria: 0.511,
+            bobotSubkriteria: 0.699
           },
           {
             subkriteria: 'Baik',
             nilai: 70,
-            eigenKriteria: 0.511,
-            eigenSubkriteria: 0.699
+            bobotKriteria: 0.511,
+            bobotSubkriteria: 0.699
           },
           {
             subkriteria: 'Cukup',
             nilai: 90,
-            eigenKriteria: 0.511,
-            eigenSubkriteria: 0.699
+            bobotKriteria: 0.511,
+            bobotSubkriteria: 0.699
           },
         ]
       }
