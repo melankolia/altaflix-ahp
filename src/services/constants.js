@@ -7,6 +7,14 @@ export const USER = {
   DELETE: `${user}`,
 };
 
+const divisi = "/divisi";
+export const DIVISI = {
+  CREATE: `${divisi}`,
+  BROWSE: `${divisi}`,
+  DETAIL: `${divisi}`,
+  DELETE: `${divisi}`,
+};
+
 const kelas = "kelas/v1";
 export const KELAS = {
   ALL: `${kelas}/all`,

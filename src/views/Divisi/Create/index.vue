@@ -36,8 +36,7 @@ export default {
   },
   data() {
     return {
-      id: this.$route.query?.secureId,
-      kelas: this.$route.query?.kelas,
+      id: this.$route.query?.divisiId,
       loading: false,
       selected: {
         id: 0,
