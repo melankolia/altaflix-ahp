@@ -12,7 +12,7 @@
                             <v-row>
                                 <v-col cols="12">
                                     <p class="label-style mb-1">Subkriteria</p>
-                                    <v-text-field v-model="edit.subkriteria" placeholder="Subkriteria" outlined solo dense
+                                    <v-text-field v-model="edit.nama" placeholder="Subkriteria" outlined solo dense
                                         class="rounded" :rules="[(v) => !!v || 'Field ini tidak boleh kosong']">
                                     </v-text-field>
                                 </v-col>
@@ -59,7 +59,7 @@ export default {
             validSubmit: false,
             edit: {
                 no: null,
-                subkriteria: null,
+                nama: null,
                 nilai: null,
                 keterangan: null
             }

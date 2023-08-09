@@ -16,8 +16,7 @@
         </p>
       </div>
     </div>
-    <ContentNotFound message="Data Tentang Diri Tenaga Kependidikan Not Found" :loading="loading"
-      v-if="!isAvailable && isUpdate">
+    <ContentNotFound message="Data Kriteria Not Found" :loading="loading" v-if="!isAvailable && isUpdate">
       <template v-slot:action>
         <v-btn @click="() => getDetail()" depressed color="header" class="rounded-lg outlined-custom">
           <v-icon class="mr-1" small>mdi-reload</v-icon>
@@ -29,11 +28,11 @@
       <v-row>
         <v-col cols="12" xs="12" sm="6">
           <p class="mb-3 title-input">Kode Kriteria</p>
-          <v-text-field v-model="payload.kode" hide-details filled solo label="Contoh : D01" />
+          <v-text-field v-model="payload.code" hide-details filled solo label="Contoh : K00001" />
         </v-col>
         <v-col cols="12" xs="12" sm="6">
           <p class="mb-3 title-input">Nama Kriteria</p>
-          <v-text-field v-model="payload.nama" hide-details filled solo label="Contoh : Div. Etc" />
+          <v-text-field v-model="payload.nama" hide-details filled solo />
         </v-col>
       </v-row>
       <hr class="mt-12 mb-4">
@@ -69,10 +68,6 @@
                   <v-list-item @click="() => editData(item)" link>
                     <img class="mr-4" src="@/assets/icons/edit-outlined.svg" />
                     <p class="selection-item ma-0">Edit Data</p>
-                  </v-list-item>
-                  <v-list-item @click="() => deleteData(item)" link>
-                    <img class="mr-4" src="@/assets/icons/delete-outlined.svg" />
-                    <p class="selection-item ma-0">Hapus Data</p>
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -124,8 +119,8 @@
 </template>
 
 <script>
-import { USER } from "@/router/name.types";
-import TenagaAhliService from "@/services/resources/tenaga-ahli.service";
+import { KRITERIA } from "@/router/name.types";
+import KriteriaService from "@/services/resources/kriteria.service";
 const ContentNotFound = () => import("../../../components/Content/NotFound");
 const DialogEdit = () => import('../../../components/Dialog')
 
@@ -136,14 +131,11 @@ export default {
   },
   data() {
     return {
-      id: this.$route.params?.userId,
+      id: this.$route.params?.kriteriaId,
       loading: false,
 
       // Components Dialog
       visible: false,
-
-      // Jenis Kelamin Properties
-      listJenisKelamin: ["Super Admin", "User"],
 
 
       // Birthdate Menu Properties
@@ -151,7 +143,7 @@ export default {
 
       // Property Subkriteria
       headerSub: [
-        { text: "Subkriteria", value: "subkriteria", sortable: false },
+        { text: "Subkriteria", value: "nama", sortable: false },
         {
           text: "Keterangan", value: "keterangan", sortable: false,
         },
@@ -165,7 +157,7 @@ export default {
       validEdited: false,
       editSub: {
         no: null,
-        subkriteria: null,
+        nama: null,
         keterangan: null,
         nilai: null
       },
@@ -173,48 +165,40 @@ export default {
       // General Properties
 
       payload: {
-        tenaga_ahli_id: null,
-        jenis_kelamin: null,
-        tempat_lahir: null,
-        tanggal_lahir: null,
-        nip_karpeg: null,
-        pendidikan_terakhir: null,
-        mulai_bertugas: null,
-        jabatan: null,
-        gol_pangkat: null,
-        tmt_pangkat: null,
-        sk_pertama: null,
-        gaji_pokok: null,
-        mk_gol_tahun: null,
-        mk_gol_bulan: null,
-        tk: null,
-        yad_pangkat: null,
-        yad_gaji: null,
-        nuptk: null,
-        files: null,
-        kode: 'K1',
-        nama: 'Prestasi Pekerjaan',
+        code: null,
+        nama: null,
+        eigen: null,
+        bobot_prioritas: null,
         subkriteria: [
           {
-            subkriteria: 'Sangat Baik',
+            no: 0,
+            nama: 'Sangat Baik',
             keterangan: 'Sangat Baik',
-            nilai: 90
+            nilai: 90,
+            bobot_prioritas: null,
+            eigen: null
           },
           {
-            subkriteria: 'Cukup',
+            no: 1,
+            nama: 'Cukup',
             keterangan: 'Cukup',
-            nilai: 75
+            nilai: 75,
+            bobot_prioritas: null,
+            eigen: null
           },
           {
-            subkriteria: 'Kurang',
+            no: 2,
+            nama: 'Kurang',
             keterangan: 'Kurang',
-            nilai: 60
+            nilai: 60,
+            bobot_prioritas: null,
+            eigen: null
           }
         ]
       },
 
       addSub: {
-        subkriteria: null,
+        nama: null,
         keterangan: null,
         nilai: null,
       }
@@ -225,7 +209,7 @@ export default {
     handleClose(e) {
       this.editSub = {
         no: null,
-        subkriteria: null,
+        nama: null,
         keterangan: null,
         nilai: null
       }
@@ -241,7 +225,7 @@ export default {
     handleAdd() {
       this.addMode = true;
       this.addSub = {
-        subkriteria: null,
+        nama: null,
         keterangan: null,
         nilai: null
       }
@@ -251,7 +235,7 @@ export default {
         ...this.addSub
       })
       this.addSub = {
-        subkriteria: null,
+        nama: null,
         keterangan: null,
         nilai: null
       }
@@ -261,59 +245,24 @@ export default {
       this.editSub = { ...item }
       this.visible = true;
     },
-    deleteData(item) {
-      this.payload.subkriteria.splice(item.no, 1)
-    },
-    filesChange(file) {
-      this.payload.files = file[0];
-      const doc = document.getElementById("preview-photo");
-      this.createBase64Image(this.payload.files).then((e) => {
-        doc.style.background = "none";
-        doc.style.backgroundImage = 'url("' + e.target.result + '")';
-        doc.style.backgroundPosition = "center";
-        doc.style.backgroundRepeat = "no-repeat";
-        doc.style.backgroundSize = "contain";
-      });
-    },
     getDetail() {
       this.$emit("handleLoading", true);
       this.loading = true;
-      TenagaAhliService.getDetail(this.id)
-        .then(({ data: { code, data, message } }) => {
-          if (code == 200) {
+      KriteriaService.getDetail(this.id)
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            result.subkriteria.map((e, i) => {
+              e.no = i
+            })
+
             this.payload = {
               ...this.payload,
-              ...data,
-            };
-
-            if (data.ttl) {
-              const ttl = data.ttl.split(", ");
-              if (ttl.length > 0 && ttl.length <= 2) {
-                this.payload.tempat_lahir = ttl[0];
-              }
-            }
-
-            if (data.image) {
-              fetch(data.image)
-                .then((response) => response.blob())
-                .then((blob) => {
-                  this.createBase64Image(blob).then((e) => {
-                    this.payload.files = blob;
-                    const doc = document.getElementById("preview-photo");
-                    doc.style.background = "none";
-                    doc.style.backgroundImage =
-                      'url("' + e.target.result + '")';
-                    doc.style.backgroundPosition = "center";
-                    doc.style.backgroundRepeat = "no-repeat";
-                    doc.style.backgroundSize = "contain";
-                  });
-                });
+              ...result,
             }
           } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message:
-                message || "Gagal Memuat Data Tentang Diri Tenaga Kependidikan",
+              message: result || "Gagal Memuat Data Kriteria",
               color: "error",
             });
           }
@@ -321,7 +270,7 @@ export default {
         .catch((err) => {
           this.$store.commit("snackbar/setSnack", {
             show: true,
-            message: "Gagal Memuat Data Tentang Diri Tenaga Kependidikan",
+            message: "Gagal Memuat Data Kriteria",
             color: "error",
           });
           console.error(err);
@@ -333,82 +282,48 @@ export default {
     },
     handleSubmit() {
       this.$emit("handleLoading", true);
-      this.createBase64Image(this.payload.files)
-        .then((e) => {
-          const tanggal_lahir = this.$DateTime
-            .fromISO(this.payload.tanggal_lahir)
-            .setLocale("id")
-            .toFormat("dd-MM-yyyy");
+      const payload = {
+        code: this.payload.code,
+        nama: this.payload.nama,
+        eigen: this.payload.eigen,
+        bobot_prioritas: this.payload.bobot_prioritas,
+        subkriteria: [...this.payload.subkriteria]
+      }
 
-          const payload = {
-            image: e.target.result,
-            nama: this.payload.nama,
-            jenis_kelamin: this.payload.jenis_kelamin || "-",
-            ttl: `${this.payload.tempat_lahir}, ${tanggal_lahir}` || "-",
-            nip_karpeg: this.payload.nip_karpeg || "-",
-            pendidikan: this.payload.pendidikan || "-",
-            mulai_bertugas: this.payload.mulai_bertugas || "-",
-            jabatan: this.payload.jabatan || "-",
-            gol_pangkat: this.payload.gol_pangkat || "-",
-            tmt_pangkat: this.payload.tmt_pangkat || "-",
-            sk_pertama: this.payload.sk_pertama || "-",
-            gaji_pokok: this.payload.gaji_pokok || "-",
-            mk_gol_tahun: this.payload.mk_gol_tahun || "-",
-            mk_gol_bulan: this.payload.mk_gol_bulan || "-",
-            k_tk: this.payload.k_tk || "-",
-            yad_pangkat: this.payload.yad_pangkat || "-",
-            yad_gaji: this.payload.yad_gaji || "-",
-            nuptk: this.payload.nuptk || "-",
-          };
-          if (this.payload?.tenaga_ahli_id)
-            payload.tenaga_ahli_id = this.payload.tenaga_ahli_id;
-          TenagaAhliService.addTenagaAhli(payload)
-            .then(({ data: { success, message } }) => {
-              if (success == true) {
-                this.$store.commit("snackbar/setSnack", {
-                  show: true,
-                  message: "Berhasil Menyimpan Data Tenaga Kependidikan",
-                  color: "success",
-                });
-                this.$router.replace({ name: USER.BROWSE });
-                this.$vuetify.goTo(1, {
-                  duration: 300,
-                  offset: 0,
-                  easing: "easeInOutCubic",
-                });
-              } else {
-                this.$store.commit("snackbar/setSnack", {
-                  show: true,
-                  message:
-                    message || "Gagal Menyimpan Data Tenaga Kependidikan",
-                  color: "error",
-                });
-              }
-            })
-            .catch((err) => {
-              console.error(err);
-              this.$store.commit("snackbar/setSnack", {
-                show: true,
-                message: "Gagal Menyimpan Data Tenaga Kependidikan",
-                color: "error",
-              });
-            })
-            .finally(() => this.$emit("handleLoading", false));
+      this.isUpdate && (payload.kriteria_id = this.payload.kriteria_id)
+
+      KriteriaService.addKriteria(payload)
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message: "Berhasil Menyimpan Data Kriteria",
+              color: "success",
+            });
+            this.$router.replace({ name: KRITERIA.BROWSE });
+            this.$vuetify.goTo(1, {
+              duration: 300,
+              offset: 0,
+              easing: "easeInOutCubic",
+            });
+          } else {
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message:
+                result || "Gagal Menyimpan Data Kriteria",
+              color: "error",
+            });
+          }
         })
         .catch((err) => {
           console.error(err);
-          this.$vuetify.goTo("#preview-photo", {
-            duration: 500,
-            offset: 0,
-            easing: "easeInOutCubic",
-          });
           this.$store.commit("snackbar/setSnack", {
             show: true,
-            message: "File Foto Harus Diisi",
+            message: "Gagal Menyimpan Data Kriteria",
             color: "error",
           });
-          this.$emit("handleLoading", false);
-        });
+        })
+        .finally(() => this.$emit("handleLoading", false));
     },
   },
   computed: {
@@ -419,14 +334,7 @@ export default {
       return this.id ? true : false;
     },
     isAvailable() {
-      return this.payload?.tenaga_ahli_id;
-    },
-    tanggal_lahir() {
-      if (this.payload.tanggal_lahir) {
-        return this.$DateTime
-          .fromISO(this.payload.tanggal_lahir)
-          .toFormat("dd LLLL yyyy");
-      } else return "-";
+      return this.payload?.kriteria_id;
     },
   },
   mounted() {

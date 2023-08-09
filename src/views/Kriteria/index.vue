@@ -102,10 +102,8 @@
 </template>
 
 <script>
-import TenagaAhliService from "@/services/resources/tenaga-ahli.service";
+import KriteriaService from "@/services/resources/kriteria.service";
 import { KRITERIA } from "@/router/name.types";
-import { SET_TENAGA_AHLI_INFO } from "@/store/constants/mutations.type";
-import { mapMutations } from "vuex";
 const CustomFooter = () => import("@/components/Table/Footer");
 
 export default {
@@ -119,12 +117,12 @@ export default {
       sortBy: "nama ASC",
       itemSortBy: [
         {
-          text: "a-z Nama Projek",
+          text: "a-z Nama Kriteria",
           value: "nama ASC",
           icon: "mdi-sort-ascending",
         },
         {
-          text: "z-a Nama Projek",
+          text: "z-a Nama Kriteria",
           value: "nama DESC",
           icon: "mdi-sort-descending",
         },
@@ -140,7 +138,7 @@ export default {
         },
       ],
       headers: [
-        { text: "Kode", value: "kode", sortable: false },
+        { text: "Kode", value: "code", sortable: false },
         { text: "Kriteria", value: "nama", width: '321px', sortable: false },
         { text: "Aksi", value: "action", sortable: false },
       ],
@@ -156,7 +154,7 @@ export default {
 
       // Property Subkriteria
       headerSub: [
-        { text: "Subkriteria", value: "subkriteria", sortable: false },
+        { text: "Subkriteria", value: "nama", sortable: false },
         {
           text: "Keterangan", value: "keterangan", sortable: false,
         },
@@ -165,7 +163,6 @@ export default {
     };
   },
   methods: {
-    ...mapMutations([SET_TENAGA_AHLI_INFO]),
     handleBack() {
       this.$router.replace({ name: KRITERIA.BROWSE });
     },
@@ -175,7 +172,7 @@ export default {
     handleEdit(item) {
       this.$router.push({
         name: KRITERIA.UPDATE,
-        params: { userId: item.tenaga_ahli_id },
+        params: { kriteriaId: item.kriteria_id },
       });
     },
     handleDelete(item) {
@@ -195,22 +192,19 @@ export default {
     },
     requestDelete(item) {
       this.loading = true;
-      TenagaAhliService.deleteTenagaAhli({
-        id: item.tenaga_ahli_id,
-        type: "tenaga_ahli",
-      })
-        .then(({ data: { success, message } }) => {
-          if (success == true) {
+      KriteriaService.deleteKriteria(item.kriteria_id)
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message: `Berhasil Menghapus data Tenaga Kependidikan`,
+              message: `Berhasil Menghapus data Kriteria`,
               color: "success",
             });
             this.getList();
           } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message: message || `Gagal Menghapus data Tenaga Kependidikan`,
+              message: result || `Gagal Menghapus data Kriteria`,
               color: "error",
             });
           }
@@ -219,13 +213,13 @@ export default {
           console.error(err);
           this.$store.commit("snackbar/setSnack", {
             show: true,
-            message: `Gagal Menghapus data Tenaga Kependidikan`,
+            message: `Gagal Menghapus data Kriteria`,
             color: "error",
           });
         })
         .finally(() => (this.loading = false));
     },
-    getList() {
+    getLists() {
       this.loading = true;
       setTimeout(() => {
         const { page, itemsPerPage } = this.options;
@@ -350,11 +344,11 @@ export default {
         this.loading = false;
       }, 1000);
     },
-    getLists() {
+    getList() {
       const { page, itemsPerPage } = this.options;
       this.loading = true;
-      this.createToken(TenagaAhliService.cancelReq().source());
-      TenagaAhliService.getList(
+      this.createToken(KriteriaService.cancelReq().source());
+      KriteriaService.getList(
         {
           search: this.search,
           page,
@@ -363,18 +357,18 @@ export default {
         },
         { cancelToken: this.cancelRequest.token }
       )
-        .then(({ data: { code, message, data, meta } }) => {
-          if (code == 200) {
-            data.map((d, index) => {
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            result.map((d, index) => {
               d.nomor = itemsPerPage * (page - 1) + (index + 1);
             });
-            this.items = [...data];
-            this.totalItem = meta.totalData;
-            this.totalPage = meta.totalPage;
+            this.items = [...result];
+            this.totalItem = result.length;
+            this.totalPage = result.length / itemsPerPage
           } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message: message || "Gagal Memuat Data Semua Tenaga Kependidikan",
+              message: message || "Gagal Memuat Data Semua Kriteria",
               color: "error",
             });
           }

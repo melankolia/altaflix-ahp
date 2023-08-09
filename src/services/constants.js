@@ -23,6 +23,14 @@ export const PROJEK = {
   DELETE: `${projek}`,
 };
 
+const kriteria = "/kriteria";
+export const KRITERIA = {
+  CREATE: `${kriteria}`,
+  BROWSE: `${kriteria}`,
+  DETAIL: `${kriteria}`,
+  DELETE: `${kriteria}`,
+};
+
 const kelas = "kelas/v1";
 export const KELAS = {
   ALL: `${kelas}/all`,
