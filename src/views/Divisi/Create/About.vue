@@ -99,7 +99,7 @@ export default {
     handleSubmit() {
       this.$emit("handleLoading", true);
       DivisiService.addDivisi(this.payload)
-        .then(({ data: { message } }) => {
+        .then(({ data: { result, message } }) => {
           if (message == "OK") {
             this.$store.commit("snackbar/setSnack", {
               show: true,
@@ -116,7 +116,7 @@ export default {
             this.$store.commit("snackbar/setSnack", {
               show: true,
               message:
-                message || "Gagal Menyimpan Data Divisi",
+                result || "Gagal Menyimpan Data Divisi",
               color: "error",
             });
           }

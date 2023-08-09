@@ -15,6 +15,14 @@ export const DIVISI = {
   DELETE: `${divisi}`,
 };
 
+const projek = "/projek";
+export const PROJEK = {
+  CREATE: `${projek}`,
+  BROWSE: `${projek}`,
+  DETAIL: `${projek}`,
+  DELETE: `${projek}`,
+};
+
 const kelas = "kelas/v1";
 export const KELAS = {
   ALL: `${kelas}/all`,

@@ -92,7 +92,7 @@ export default {
             this.$store.commit("snackbar/setSnack", {
               show: true,
               message:
-                message ||
+                result ||
                 "Gagal Memuat Data Tentang Diri User",
               color: "error",
             });
@@ -114,7 +114,7 @@ export default {
     handleSubmit() {
       this.$emit("handleLoading", true);
       UserService.addUser(this.payload)
-        .then(({ data: { message } }) => {
+        .then(({ data: { result, message } }) => {
           if (message == "OK") {
             this.$store.commit("snackbar/setSnack", {
               show: true,
@@ -131,7 +131,7 @@ export default {
             this.$store.commit("snackbar/setSnack", {
               show: true,
               message:
-                message || "Gagal Menyimpan Data User",
+                result || "Gagal Menyimpan Data User",
               color: "error",
             });
           }

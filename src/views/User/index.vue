@@ -182,7 +182,7 @@ export default {
     requestDelete(item) {
       this.loading = true;
       UserService.deleteUser(item.user_id)
-        .then(({ data: { message } }) => {
+        .then(({ data: { result, message } }) => {
           if (message == "OK") {
             this.$store.commit("snackbar/setSnack", {
               show: true,
@@ -193,7 +193,7 @@ export default {
           } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message: message || `Gagal Menghapus data User`,
+              message: result || `Gagal Menghapus data User`,
               color: "error",
             });
           }
@@ -233,7 +233,7 @@ export default {
             this.$store.commit("snackbar/setSnack", {
               show: true,
               message:
-                message || "Gagal Memuat Data User",
+                result || "Gagal Memuat Data User",
               color: "error",
             });
           }
