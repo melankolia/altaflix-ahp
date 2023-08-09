@@ -7,15 +7,22 @@
       </keep-alive>
     </transition>
     <v-row>
-      <v-col cols="12" xs="12" sm="6">
+      <v-col cols="12" xs="12" sm="2">
         <v-btn @click="handlePrev" block depressed class="rounded-lg pa-6">
           <p class="header-button-back ma-0">
             <span> Kembali </span>
           </p>
         </v-btn>
       </v-col>
-      <v-col cols="12" xs="12" sm="6">
-        <v-btn block @click="handleSubmit" depressed color="primary" class="rounded-lg pa-6" :loading="loading"
+      <v-col cols="12" xs="12" sm="2">
+        <v-btn @click="handleDelete" block depressed color="error" class="rounded-lg pa-6">
+          <p class="header-button-back ma-0">
+            <span> Delete </span>
+          </p>
+        </v-btn>
+      </v-col>
+      <v-col cols="12" xs="12" sm="2">
+        <v-btn block @click="handleSubmit" depressed color="success" class="rounded-lg pa-6" :loading="loading"
           :disabled="loading">
           <p class="header-button-back ma-0">
             <span> {{ disabledNext ? "Save" : "Selanjutnya" }} </span>
@@ -78,6 +85,9 @@ export default {
         offset: 0,
         easing: "easeInOutCubic",
       });
+    },
+    handleDelete() {
+      console.log('handleDelete');
     },
     handleNext() {
       this.selected = this.components[this.selected.id + 1];
