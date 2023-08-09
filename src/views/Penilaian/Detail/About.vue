@@ -43,6 +43,18 @@
               </td>
             </tr>
             <tr>
+              <td>Tempat Tanggal Lahir</td>
+              <td class="text-right text-sub">
+                {{ tempat_tanggal_lahir || "-" }}
+              </td>
+            </tr>
+            <tr>
+              <td>Status Karyawan</td>
+              <td class="text-right text-sub">
+                {{ items.status_karyawan || "-" }}
+              </td>
+            </tr>
+            <tr>
               <td>Nama Divisi</td>
               <td class="text-right text-sub">
                 {{ items.namaDivisi || "-" }}
@@ -93,6 +105,9 @@ export default {
         namaJabatan: "Frontend Engineer",
         namaProjek: "FGC FIF",
         namaDivisi: "Div. Engineering",
+        tempat_lahir: "Kuningan",
+        tanggal_lahir: "14 Februari 1998",
+        status_karyawan: "Tetap",
         tglMasuk: "10-07-2016",
         lamaKerja: "5 Tahun",
         periode: 2021,
@@ -112,6 +127,9 @@ export default {
     isAvailable() {
       return this.items?.nik;
     },
+    tempat_tanggal_lahir() {
+      return `${this.items?.tempat_lahir}, ${this.items?.tanggal_lahir}`
+    }
   },
   methods: {
     getDetails() {

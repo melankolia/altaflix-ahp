@@ -3,12 +3,7 @@
     <div class="d-flex flex-row justify-space-between mb-12">
       <div class="d-flex flex-column">
         <div>
-          <v-btn
-            @click="handleBack"
-            depressed
-            color="header"
-            class="rounded-lg mr-4 mb-8 outlined-custom"
-          >
+          <v-btn @click="handleBack" depressed color="header" class="rounded-lg mr-4 mb-8 outlined-custom">
             <p class="header-button-back ma-0">
               <v-icon class="mr-1" small>mdi-chevron-left</v-icon>
               <span> Kembali </span>
@@ -21,18 +16,9 @@
         </p>
       </div>
     </div>
-    <ContentNotFound
-      message="Data Tentang Diri Tenaga Kependidikan Not Found"
-      :loading="loading"
-      v-if="!isAvailable && isUpdate"
-    >
+    <ContentNotFound message="Data Tentang Diri User Not Found" :loading="loading" v-if="!isAvailable && isUpdate">
       <template v-slot:action>
-        <v-btn
-          @click="() => getDetail()"
-          depressed
-          color="header"
-          class="rounded-lg outlined-custom"
-        >
+        <v-btn @click="() => getDetail()" depressed color="header" class="rounded-lg outlined-custom">
           <v-icon class="mr-1" small>mdi-reload</v-icon>
           <p class="header-button-back ma-0">Reload</p>
         </v-btn>
@@ -41,40 +27,23 @@
     <div v-else class="d-flex flex-column">
       <v-row>
         <v-col cols="12" xs="12" sm="6">
-          <p class="mb-3 title-input">User ID</p>
-          <v-text-field
-            v-model="payload.nama"
-            hide-details
-            filled
-            solo
-            label="Contoh : User"
-          />
+          <p class="mb-3 title-input">Username</p>
+          <v-text-field v-model="payload.username" hide-details filled solo label="Contoh : User" />
         </v-col>
         <v-col cols="12" xs="12" sm="6">
           <p class="mb-3 title-input">Nama Lengkap</p>
-          <v-text-field
-            v-model="payload.nama"
-            hide-details
-            filled
-            solo
-            label="Contoh : Hamdan Maulani"
-          />
+          <v-text-field v-model="payload.nama_lengkap" hide-details filled solo label="Contoh : Hamdan Maulani" />
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" xs="12" sm="6">
           <p class="mb-3 title-input">E-Mail</p>
-          <v-text-field
-            v-model="payload.nama"
-            hide-details
-            filled
-            solo
-            label="Contoh : hamda@user.com"
-          />
+          <v-text-field v-model="payload.email" hide-details filled solo label="Contoh : hamda@user.com" />
         </v-col>
         <v-col cols="12" xs="12" sm="6">
           <p class="mb-3 title-input">Password</p>
-          <v-text-field v-model="payload.nama" hide-details filled solo />
+          <v-text-field v-model="payload.password" hide-details filled solo :append-icon="e1 ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="() => (e1 = !e1)" :type="e1 ? 'password' : 'text'" />
         </v-col>
       </v-row>
     </div>
@@ -82,235 +51,129 @@
 </template>
 
 <script>
-  import { USER } from "@/router/name.types";
-  import TenagaAhliService from "@/services/resources/tenaga-ahli.service";
-  const ContentNotFound = () => import("../../../components/Content/NotFound");
+import { USER } from "@/router/name.types";
+import UserService from "@/services/resources/user.service";
+const ContentNotFound = () => import("../../../components/Content/NotFound");
 
-  export default {
-    components: {
-      ContentNotFound,
-    },
-    data() {
-      return {
-        id: this.$route.params?.userId,
-        loading: false,
+export default {
+  components: {
+    ContentNotFound,
+  },
+  data() {
+    return {
+      e1: true,
 
-        // Jenis Kelamin Properties
-        listJenisKelamin: ["Super Admin", "User"],
+      id: this.$route.params?.userId,
+      loading: false,
 
-        // Birthdate Menu Properties
-        birthDateMenu: false,
-
-        payload: {
-          tenaga_ahli_id: null,
-          nama: null,
-          jenis_kelamin: null,
-          tempat_lahir: null,
-          tanggal_lahir: null,
-          nip_karpeg: null,
-          pendidikan_terakhir: null,
-          mulai_bertugas: null,
-          jabatan: null,
-          gol_pangkat: null,
-          tmt_pangkat: null,
-          sk_pertama: null,
-          gaji_pokok: null,
-          mk_gol_tahun: null,
-          mk_gol_bulan: null,
-          tk: null,
-          yad_pangkat: null,
-          yad_gaji: null,
-          nuptk: null,
-          files: null,
-        },
-      };
-    },
-    methods: {
-      handleBack() {
-        this.$router.back();
+      payload: {
+        username: null,
+        password: null,
+        nama_lengkap: null,
+        email: null
       },
-      filesChange(file) {
-        this.payload.files = file[0];
-        const doc = document.getElementById("preview-photo");
-        this.createBase64Image(this.payload.files).then((e) => {
-          doc.style.background = "none";
-          doc.style.backgroundImage = 'url("' + e.target.result + '")';
-          doc.style.backgroundPosition = "center";
-          doc.style.backgroundRepeat = "no-repeat";
-          doc.style.backgroundSize = "contain";
-        });
-      },
-      getDetail() {
-        this.$emit("handleLoading", true);
-        this.loading = true;
-        TenagaAhliService.getDetail(this.id)
-          .then(({ data: { code, data, message } }) => {
-            if (code == 200) {
-              this.payload = {
-                ...this.payload,
-                ...data,
-              };
-
-              if (data.ttl) {
-                const ttl = data.ttl.split(", ");
-                if (ttl.length > 0 && ttl.length <= 2) {
-                  this.payload.tempat_lahir = ttl[0];
-                }
-              }
-
-              if (data.image) {
-                fetch(data.image)
-                  .then((response) => response.blob())
-                  .then((blob) => {
-                    this.createBase64Image(blob).then((e) => {
-                      this.payload.files = blob;
-                      const doc = document.getElementById("preview-photo");
-                      doc.style.background = "none";
-                      doc.style.backgroundImage =
-                        'url("' + e.target.result + '")';
-                      doc.style.backgroundPosition = "center";
-                      doc.style.backgroundRepeat = "no-repeat";
-                      doc.style.backgroundSize = "contain";
-                    });
-                  });
-              }
-            } else {
-              this.$store.commit("snackbar/setSnack", {
-                show: true,
-                message:
-                  message ||
-                  "Gagal Memuat Data Tentang Diri Tenaga Kependidikan",
-                color: "error",
-              });
-            }
-          })
-          .catch((err) => {
+    };
+  },
+  methods: {
+    handleBack() {
+      this.$router.back();
+    },
+    getDetail() {
+      this.$emit("handleLoading", true);
+      this.loading = true;
+      UserService.getDetail(this.id)
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            this.payload = {
+              ...this.payload,
+              ...result,
+            };
+          } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message: "Gagal Memuat Data Tentang Diri Tenaga Kependidikan",
+              message:
+                message ||
+                "Gagal Memuat Data Tentang Diri User",
               color: "error",
             });
-            console.error(err);
-          })
-          .finally(() => {
-            this.loading = false;
-            this.$emit("handleLoading", false);
+          }
+        })
+        .catch((err) => {
+          this.$store.commit("snackbar/setSnack", {
+            show: true,
+            message: "Gagal Memuat Data Tentang Diri User",
+            color: "error",
           });
-      },
-      handleSubmit() {
-        this.$emit("handleLoading", true);
-        this.createBase64Image(this.payload.files)
-          .then((e) => {
-            const tanggal_lahir = this.$DateTime
-              .fromISO(this.payload.tanggal_lahir)
-              .setLocale("id")
-              .toFormat("dd-MM-yyyy");
-
-            const payload = {
-              image: e.target.result,
-              nama: this.payload.nama,
-              jenis_kelamin: this.payload.jenis_kelamin || "-",
-              ttl: `${this.payload.tempat_lahir}, ${tanggal_lahir}` || "-",
-              nip_karpeg: this.payload.nip_karpeg || "-",
-              pendidikan: this.payload.pendidikan || "-",
-              mulai_bertugas: this.payload.mulai_bertugas || "-",
-              jabatan: this.payload.jabatan || "-",
-              gol_pangkat: this.payload.gol_pangkat || "-",
-              tmt_pangkat: this.payload.tmt_pangkat || "-",
-              sk_pertama: this.payload.sk_pertama || "-",
-              gaji_pokok: this.payload.gaji_pokok || "-",
-              mk_gol_tahun: this.payload.mk_gol_tahun || "-",
-              mk_gol_bulan: this.payload.mk_gol_bulan || "-",
-              k_tk: this.payload.k_tk || "-",
-              yad_pangkat: this.payload.yad_pangkat || "-",
-              yad_gaji: this.payload.yad_gaji || "-",
-              nuptk: this.payload.nuptk || "-",
-            };
-            if (this.payload?.tenaga_ahli_id)
-              payload.tenaga_ahli_id = this.payload.tenaga_ahli_id;
-            TenagaAhliService.addTenagaAhli(payload)
-              .then(({ data: { success, message } }) => {
-                if (success == true) {
-                  this.$store.commit("snackbar/setSnack", {
-                    show: true,
-                    message: "Berhasil Menyimpan Data Tenaga Kependidikan",
-                    color: "success",
-                  });
-                  this.$router.replace({ name: USER.BROWSE });
-                  this.$vuetify.goTo(1, {
-                    duration: 300,
-                    offset: 0,
-                    easing: "easeInOutCubic",
-                  });
-                } else {
-                  this.$store.commit("snackbar/setSnack", {
-                    show: true,
-                    message:
-                      message || "Gagal Menyimpan Data Tenaga Kependidikan",
-                    color: "error",
-                  });
-                }
-              })
-              .catch((err) => {
-                console.error(err);
-                this.$store.commit("snackbar/setSnack", {
-                  show: true,
-                  message: "Gagal Menyimpan Data Tenaga Kependidikan",
-                  color: "error",
-                });
-              })
-              .finally(() => this.$emit("handleLoading", false));
-          })
-          .catch((err) => {
-            console.error(err);
-            this.$vuetify.goTo("#preview-photo", {
-              duration: 500,
+          console.error(err);
+        })
+        .finally(() => {
+          this.loading = false;
+          this.$emit("handleLoading", false);
+        });
+    },
+    handleSubmit() {
+      this.$emit("handleLoading", true);
+      UserService.addUser(this.payload)
+        .then(({ data: { message } }) => {
+          if (message == "OK") {
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message: "Berhasil Menyimpan Data User",
+              color: "success",
+            });
+            this.$router.replace({ name: USER.BROWSE });
+            this.$vuetify.goTo(1, {
+              duration: 300,
               offset: 0,
               easing: "easeInOutCubic",
             });
+          } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message: "File Foto Harus Diisi",
+              message:
+                message || "Gagal Menyimpan Data User",
               color: "error",
             });
-            this.$emit("handleLoading", false);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$store.commit("snackbar/setSnack", {
+            show: true,
+            message: "Gagal Menyimpan Data User",
+            color: "error",
           });
-      },
+        })
+        .finally(() => this.$emit("handleLoading", false));
     },
-    computed: {
-      isUpdate() {
-        return this.id ? true : false;
-      },
-      isAvailable() {
-        return this.payload?.tenaga_ahli_id;
-      },
-      tanggal_lahir() {
-        if (this.payload.tanggal_lahir) {
-          return this.$DateTime
-            .fromISO(this.payload.tanggal_lahir)
-            .toFormat("dd LLLL yyyy");
-        } else return "-";
-      },
+  },
+  computed: {
+    isUpdate() {
+      return this.id ? true : false;
     },
-    mounted() {
-      this.isUpdate && this.getDetail();
+    isAvailable() {
+      return this.payload?.user_id;
     },
-  };
+  },
+  mounted() {
+    this.isUpdate && this.getDetail();
+  },
+};
 </script>
 
 <style>
-  .picture-border {
-    width: 135px;
-    height: 180px;
-    background: gray;
-    border: 1px solid #f4f4f4;
-  }
+.picture-border {
+  width: 135px;
+  height: 180px;
+  background: gray;
+  border: 1px solid #f4f4f4;
+}
 
-  .picture-border:hover {
-    cursor: pointer;
-  }
+.picture-border:hover {
+  cursor: pointer;
+}
 
-  .v-input__control {
-    border: none;
-  }
+.v-input__control {
+  border: none;
+}
 </style>

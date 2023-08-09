@@ -1,6 +1,10 @@
 const user = "/user";
 export const USER = {
   LOGIN: `${user}/login`,
+  CREATE: `${user}`,
+  BROWSE: `${user}`,
+  DETAIL: `${user}`,
+  DELETE: `${user}`,
 };
 
 const kelas = "kelas/v1";
