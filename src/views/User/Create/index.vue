@@ -2,12 +2,8 @@
   <div class="d-flex flex-column mt-6 ml-7 mr-7 mb-12">
     <transition name="slide-fade" mode="out-in">
       <keep-alive>
-        <component
-          @handleLoading="loading = $event"
-          @handleNext="handleNext"
-          ref="childComponent"
-          :is="selected.component"
-        />
+        <component @handleLoading="loading = $event" @handleNext="handleNext" ref="childComponent"
+          :is="selected.component" />
       </keep-alive>
     </transition>
     <v-row>
@@ -19,15 +15,8 @@
         </v-btn>
       </v-col>
       <v-col cols="12" xs="12" sm="6">
-        <v-btn
-          block
-          @click="handleSubmit"
-          depressed
-          color="primary"
-          class="rounded-lg pa-6"
-          :loading="loading"
-          :disabled="loading"
-        >
+        <v-btn block @click="handleSubmit" depressed color="primary" class="rounded-lg pa-6" :loading="loading"
+          :disabled="loading">
           <p class="header-button-back ma-0">
             <span> {{ disabledNext ? "Selesai" : "Selanjutnya" }} </span>
           </p>
@@ -47,8 +36,6 @@ export default {
   },
   data() {
     return {
-      id: this.$route.query?.secureId,
-      kelas: this.$route.query?.kelas,
       loading: false,
       selected: {
         id: 0,

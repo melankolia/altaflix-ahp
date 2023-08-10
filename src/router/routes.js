@@ -273,15 +273,7 @@ export const configRoutes = [
             },
           },
           {
-            path: "create/:karyawanId",
-            name: AHP.CREATE,
-            component: PerhitunganAHP,
-            meta: {
-              requiresAuth: true,
-            },
-          },
-          {
-            path: "detail/:secureId",
+            path: "detail/:ahpId",
             name: AHP.DETAIL,
             component: PerhitunganAHP,
             meta: {
@@ -307,9 +299,9 @@ export const configRoutes = [
             },
           },
           {
-            path: "update/:secureId",
+            path: "update/:penilaianId",
             name: PENILAIAN.UPDATE,
-            component: UpdateKaryawan,
+            component: UpdatePenilaian,
             meta: {
               requiresAuth: true,
             },
@@ -323,7 +315,7 @@ export const configRoutes = [
             },
           },
           {
-            path: "detail/:secureId",
+            path: "detail/:penilaianId",
             name: PENILAIAN.DETAIL,
             component: PenilaianDetail,
             meta: {

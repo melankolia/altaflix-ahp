@@ -1,6 +1,6 @@
 <template>
   <div class="rounded-lg">
-    <ContentNotFound message="Data Karyawan Not Found" :loading="loading" v-if="!isAvailable">
+    <ContentNotFound message="Data Nilai Karyawan Not Found" :loading="loading" v-if="!isAvailable">
       <template v-slot:action>
         <v-btn @click="() => getDetail()" depressed color="header" class="rounded-lg outlined-custom">
           <v-icon class="mr-1" small>mdi-reload</v-icon>
@@ -72,10 +72,22 @@
       <div class="table-border rounded-lg pa-4 my-4" style="width: 50%;">
         <v-simple-table>
           <tbody>
-            <tr v-for="(e, i) in items.penilaian" :key="i">
-              <td>{{ i | camelToTitle }}</td>
+            <tr v-for="(e, i) in items.aspek_penilaian" :key="i">
+              <td>{{ e.kriteria_nama | camelToTitle }}</td>
               <td class="text-right text-sub">
-                {{ items.penilaian[i] || "-" }}
+                {{ e.nilai || "-" }}
+              </td>
+            </tr>
+            <tr>
+              <td>Nilai Akhir</td>
+              <td class="text-right text-sub">
+                {{ items.nilaiHasil }}
+              </td>
+            </tr>
+            <tr>
+              <td>Persentase</td>
+              <td class="text-right text-sub">
+                {{ persentase }}
               </td>
             </tr>
           </tbody>
@@ -87,7 +99,7 @@
 
 <script>
 const ContentNotFound = () => import("@/components/Content/NotFound");
-import GuruService from "@/services/resources/guru.service";
+import PenilaianService from "@/services/resources/penilaian.service";
 
 export default {
   components: {
@@ -95,30 +107,23 @@ export default {
   },
   data() {
     return {
-      id: this.$route.params?.guruId,
+      id: this.$route.params?.penilaianId,
       loading: false,
       items: {
-        noPenilaian: "PK0001",
-        tglPenilaian: "10-07-2017",
-        nik: "167109287799743",
-        namaKaryawan: "Dini",
-        namaJabatan: "Frontend Engineer",
-        namaProjek: "FGC FIF",
-        namaDivisi: "Div. Engineering",
-        tempat_lahir: "Kuningan",
-        tanggal_lahir: "14 Februari 1998",
-        status_karyawan: "Tetap",
-        tglMasuk: "10-07-2016",
-        lamaKerja: "5 Tahun",
+        noPenilaian: null,
+        tglPenilaian: null,
+        nik: null,
+        namaKaryawan: null,
+        namaJabatan: null,
+        namaProjek: null,
+        namaDivisi: null,
+        tempat_lahir: null,
+        tanggal_lahir: null,
+        status_karyawan: null,
+        tglMasuk: null,
+        lamaKerja: null,
         periode: 2021,
-        penilaian: {
-          prestasiPekerjaan: Math.ceil(Math.random() * 100),
-          kemampuanTeknis: Math.ceil(Math.random() * 100),
-          kedisiplinan: Math.ceil(Math.random() * 100),
-          komunikasi: Math.ceil(Math.random() * 100),
-          kerjaSama: Math.ceil(Math.random() * 100),
-          nilaiAkhir: (Math.random() * 1).toFixed(3),
-        },
+        aspek_penilaian: [],
         image: null
       },
     };
@@ -129,41 +134,40 @@ export default {
     },
     tempat_tanggal_lahir() {
       return `${this.items?.tempat_lahir}, ${this.items?.tanggal_lahir}`
+    },
+    persentase() {
+      return `${(this.items?.nilaiHasil * 100).toFixed(0) || '-'} %`
     }
   },
   methods: {
-    getDetails() {
+    getDetail() {
       this.loading = true;
-      GuruService.getDetail(this.id)
-        .then(({ data: { code, data, message } }) => {
-          if (code == 200) {
-            this.items = { ...this.items, ...data };
+      PenilaianService.getDetail(this.id)
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            this.items = {
+              ...this.items,
+              ...result,
+            };
 
+            this.$emit("handleItem", {
+              nama: result.namaKaryawan,
+              jabatan: result.namaJabatan,
+            })
 
-            if (data.ttl) {
-              const ttl = data.ttl.split(", ");
-              let tempat_lahir, tanggal_lahir;
-              if (ttl.length > 0 && ttl.length <= 2) {
-                tempat_lahir = ttl[0];
-                tanggal_lahir = ttl[1];
-              }
-
-              this.items.ttl = `${tempat_lahir}, ${tanggal_lahir}`;
-            }
-
-            if (data.image) {
-              // Binding Image
-              const doc = document.getElementById("preview-photo");
-              doc.style.background = "none";
-              doc.style.backgroundImage = 'url("' + data.image + '")';
-              doc.style.backgroundPosition = "center";
-              doc.style.backgroundRepeat = "no-repeat";
-              doc.style.backgroundSize = "contain";
-            }
+            // if (data.image) {
+            //   // Binding Image
+            //   const doc = document.getElementById("preview-photo");
+            //   doc.style.background = "none";
+            //   doc.style.backgroundImage = 'url("' + data.image + '")';
+            //   doc.style.backgroundPosition = "center";
+            //   doc.style.backgroundRepeat = "no-repeat";
+            //   doc.style.backgroundSize = "contain";
+            // }
           } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message: message || "Gagal Memuat Data Tentang Diri Guru",
+              message: message || "Gagal Memuat Data Nilai Karyawan",
               color: "error",
             });
           }
@@ -171,14 +175,14 @@ export default {
         .catch((err) => {
           this.$store.commit("snackbar/setSnack", {
             show: true,
-            message: "Gagal Memuat Data Tentang Diri Guru",
+            message: "Gagal Memuat Data Nilai Karyawan",
             color: "error",
           });
           console.error(err);
         })
         .finally(() => (this.loading = false));
     },
-    getDetail() {
+    getDetails() {
       setTimeout(() => {
         const data = {
           noPenilaian: "PK0001",

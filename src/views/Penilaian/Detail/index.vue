@@ -8,6 +8,18 @@
         </p>
       </v-btn>
       <div>
+        <v-btn @click="handleEdit" depressed class="rounded-lg mr-4">
+          <p class="header-button-export ma-0">
+            <v-icon class="mr-1" small>mdi-pencil</v-icon>
+            <span> Edit Data </span>
+          </p>
+        </v-btn>
+        <v-btn @click="handleDelete" depressed class="rounded-lg mr-4" color="error">
+          <p class="header-button-export ma-0">
+            <v-icon class="mr-1" small>mdi-delete</v-icon>
+            <span> Delete Data </span>
+          </p>
+        </v-btn>
         <v-btn depressed class="rounded-lg" color="primary">
           <p class="header-button-export ma-0">
             <v-icon class="mr-1" small>mdi-download</v-icon>
@@ -56,6 +68,7 @@ export default {
   },
   data() {
     return {
+      id: this.$router.params?.nilaiId,
       items: {
         nama: null,
         jabatan: null
@@ -77,9 +90,57 @@ export default {
     },
     handleEdit() {
       this.$router.push({
-        name: PENILAIAN.UPDATE
+        name: PENILAIAN.UPDATE,
+        params: {
+          nilaiId: this.nilaiId
+        }
       });
     },
+    handleDelete() {
+      this.$confirm({
+        title: "Confirm",
+        message: `Are you sure you want to delete ?`,
+        button: {
+          no: "No",
+          yes: "Yes",
+        },
+        callback: (confirm) => {
+          if (confirm) {
+            // this.requestDelete(item);
+            console.log("ADADA");
+          }
+        },
+      });
+    },
+    // requestDelete(item) {
+    //   this.loading = true;
+    //   DivisiService.deleteDivisi(item.divisi_id,)
+    //     .then(({ data: { message } }) => {
+    //       if (message == "OK") {
+    //         this.$store.commit("snackbar/setSnack", {
+    //           show: true,
+    //           message: `Berhasil Menghapus data Divisi`,
+    //           color: "success",
+    //         });
+    //         this.getList();
+    //       } else {
+    //         this.$store.commit("snackbar/setSnack", {
+    //           show: true,
+    //           message: message || `Gagal Menghapus data Divisi`,
+    //           color: "error",
+    //         });
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       console.error(err);
+    //       this.$store.commit("snackbar/setSnack", {
+    //         show: true,
+    //         message: `Gagal Menghapus data Divisi`,
+    //         color: "error",
+    //       });
+    //     })
+    //     .finally(() => (this.loading = false));
+    // },
   },
 };
 </script>

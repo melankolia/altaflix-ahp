@@ -59,7 +59,7 @@
             <router-link :to="{
               name: PENILAIAN.DETAIL,
               params: {
-                secureId: item.nik
+                penilaianId: item.nilai_id
               }
             }">
               <span class="hover-primary">
@@ -67,39 +67,6 @@
               </span>
             </router-link>
           </td>
-        </template>
-        <template #item.action="{ item }">
-          <v-menu rounded left min-width="188px">
-            <template v-slot:activator="{ attrs, on }">
-              <v-hover v-slot="{ hover }" open-delay="100">
-                <v-btn v-bind="attrs" v-on="on" small depressed color="primary" class="rounded-lg"
-                  style="width: 83px; height: 29px" :style="{
-                    'background-color': hover
-                      ? 'white !important'
-                      : '#0096C7 !important',
-                  }">
-                  <p class="ma-0" :style="{ color: hover ? '#0096C7' : '#FFFFFF' }">
-                    Buka
-                  </p>
-                  <v-icon>mdi-menu-down</v-icon>
-                </v-btn>
-              </v-hover>
-            </template>
-            <v-list>
-              <v-list-item @click="() => handleDetail(item)" link>
-                <img class="mr-4" src="@/assets/icons/detail.svg" />
-                <p class="selection-item ma-0">Buka Detail</p>
-              </v-list-item>
-              <v-list-item @click="() => handleEdit(item)" link>
-                <img class="mr-4" src="@/assets/icons/edit-outlined.svg" />
-                <p class="selection-item ma-0">Edit Data</p>
-              </v-list-item>
-              <v-list-item @click="() => handleDelete(item)" link>
-                <img class="mr-4" src="@/assets/icons/delete-outlined.svg" />
-                <p class="selection-item ma-0">Hapus Data</p>
-              </v-list-item>
-            </v-list>
-          </v-menu>
         </template>
         <template #footer="{ props }">
           <CustomFooter :options="options" :props="props" :totalPage="totalPage" />
@@ -118,7 +85,8 @@
 </template>
 
 <script>
-import KelasService from "@/services/resources/kelas.service";
+import PenilaianService from "@/services/resources/penilaian.service";
+import KriteriaService from "@/services/resources/kriteria.service";
 import { PENILAIAN } from "@/router/name.types";
 const CustomFooter = () => import("@/components/Table/Footer");
 
@@ -147,17 +115,9 @@ export default {
         { text: "Tgl Penilaian", value: "tglPenilaian", sortable: false },
         { text: "NIK", value: "nik", sortable: false },
         { text: "Nama Karyawan", value: "namaKaryawan", sortable: false, width: "321px" },
-        { text: "Jabatan", value: "jabatan", sortable: false },
+        { text: "Jabatan", value: "namaJabatan", sortable: false },
         { text: "Divisi", value: "namaDivisi", sortable: false },
         { text: "Periode", value: "periode", sortable: false },
-        { text: "Prestasi Pekerjaan", value: "prestasiPekerjaan", sortable: false },
-        { text: "Kemampuan Teknis", value: "kemampuanTeknis", sortable: false },
-        { text: "Kedisiplinan", value: "kedisiplinan", sortable: false },
-        { text: "Komunikasi", value: "komunikasi", sortable: false },
-        { text: "Kerjasama", value: "kerjaSama", sortable: false },
-        { text: "Nilai Akhir", value: "nilaiAkhir", sortable: false },
-        { text: "Rangking", value: "no", sortable: false },
-
       ],
       items: [],
       loading: false,
@@ -191,12 +151,6 @@ export default {
         name: PENILAIAN.CREATE
       })
     },
-    handleDetail(item) {
-      this.$router.push({
-        name: PENILAIAN.DETAIL,
-        params: { kelasId: item.kelas_id },
-      });
-    },
     handleDelete(item) {
       this.$confirm({
         title: "Confirm",
@@ -212,44 +166,12 @@ export default {
         },
       });
     },
-    requestDelete(item) {
-      this.loading = true;
-      KelasService.deleteKelas({
-        id: item.kelas_id,
-        type: "kelas",
-      })
-        .then(({ data: { success, message } }) => {
-          if (success == true) {
-            this.$store.commit("snackbar/setSnack", {
-              show: true,
-              message: `Berhasil Menghapus data kelas`,
-              color: "success",
-            });
-            this.getList();
-          } else {
-            this.$store.commit("snackbar/setSnack", {
-              show: true,
-              message: message || `Gagal Menghapus data kelas`,
-              color: "error",
-            });
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          this.$store.commit("snackbar/setSnack", {
-            show: true,
-            message: `Gagal Menghapus data kelas`,
-            color: "error",
-          });
-        })
-        .finally(() => (this.loading = false));
-    },
-    getLists() {
+    getList() {
       const { page, itemsPerPage } = this.options;
-      this.createToken(KelasService.cancelReq().source());
+      this.createToken(PenilaianService.cancelReq().source());
       this.loading = true;
       this.items = [];
-      KelasService.getAllKelas(
+      PenilaianService.getList(
         {
           search: this.search || null,
           tab: this.tabs[this.tab].val,
@@ -259,19 +181,14 @@ export default {
         },
         { cancelToken: this.cancelRequest.token }
       )
-        .then(({ data: { code, message, data, meta } }) => {
-          if (code == 200) {
-            meta = {
-              totalData: 10,
-              totalPage: 1,
-            };
-            data = [];
-            data.map((d, index) => {
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            result.map((d, index) => {
               d.no = itemsPerPage * (page - 1) + (index + 1);
             });
-            this.items = [...data];
-            this.totalItem = meta.totalData;
-            this.totalPage = meta.totalPage;
+            this.items = [...result];
+            this.totalItem = result.length
+            this.totalPage = result.length / itemsPerPage
           } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
@@ -291,116 +208,41 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
-    getList() {
-      this.loading = true;
-      const { page, itemsPerPage } = this.options;
+    async getHeaderKriteria() {
+      await KriteriaService.getList()
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            const converted = result.map((e) => {
+              let value = this.convertToCamelCase(e.nama);
 
-      setTimeout(() => {
-        const meta = {
-          totalData: 10,
-          totalPage: 1,
-        };
-        const data = [
-          {
-            noPenilaian: "PK0001",
-            tglPenilaian: "10-07-2017",
-            nik: "16710928374894",
-            namaKaryawan: "Ageng Setyo Nugroho",
-            namaDivisi: "Div. Engineering",
-            namaJabatan: "Frontend Engineer",
-            periode: 2021,
-            prestasiPekerjaan: Math.ceil(Math.random() * 100),
-            kemampuanTeknis: Math.ceil(Math.random() * 100),
-            kedisiplinan: Math.ceil(Math.random() * 100),
-            komunikasi: Math.ceil(Math.random() * 100),
-            kerjaSama: Math.ceil(Math.random() * 100),
-            nilaiAkhir: (Math.random() * 1).toFixed(3)
-          },
-          {
-            noPenilaian: "PK0001",
-            tglPenilaian: "10-07-2017",
-            nik: "167109287799743",
-            namaKaryawan: "Axel Reino",
-            namaJabatan: "Frontend Engineer",
-            namaDivisi: "Div. Engineering",
-            periode: 2021,
-            prestasiPekerjaan: Math.ceil(Math.random() * 100),
-            kemampuanTeknis: Math.ceil(Math.random() * 100),
-            kedisiplinan: Math.ceil(Math.random() * 100),
-            komunikasi: Math.ceil(Math.random() * 100),
-            kerjaSama: Math.ceil(Math.random() * 100),
-            nilaiAkhir: (Math.random() * 1).toFixed(3)
-          },
-          {
-            noPenilaian: "PK0001",
-            tglPenilaian: "10-07-2017",
-            nik: "167109287799743",
-            namaKaryawan: "Surya Ari Affandi",
-            namaJabatan: "iOS Engineer",
-            namaDivisi: "Div. Engineering",
-            periode: 2021,
-            prestasiPekerjaan: Math.ceil(Math.random() * 100),
-            kemampuanTeknis: Math.ceil(Math.random() * 100),
-            kedisiplinan: Math.ceil(Math.random() * 100),
-            komunikasi: Math.ceil(Math.random() * 100),
-            kerjaSama: Math.ceil(Math.random() * 100),
-            nilaiAkhir: (Math.random() * 1).toFixed(3)
-          },
-          {
-            noPenilaian: "PK0001",
-            tglPenilaian: "10-07-2017",
-            nik: "167109287799743",
-            namaKaryawan: "Arif",
-            namaJabatan: "Mobile Engineer",
-            namaDivisi: "Div. Engineering",
-            periode: 2021,
-            prestasiPekerjaan: Math.ceil(Math.random() * 100),
-            kemampuanTeknis: Math.ceil(Math.random() * 100),
-            kedisiplinan: Math.ceil(Math.random() * 100),
-            komunikasi: Math.ceil(Math.random() * 100),
-            kerjaSama: Math.ceil(Math.random() * 100),
-            nilaiAkhir: (Math.random() * 1).toFixed(3)
-          },
-          {
-            noPenilaian: "PK0001",
-            tglPenilaian: "10-07-2017",
-            nik: "167109287799743",
-            namaKaryawan: "Dini",
-            namaJabatan: "Frontend Engineer",
-            namaDivisi: "Div. Engineering",
-            periode: 2021,
-            prestasiPekerjaan: Math.ceil(Math.random() * 100),
-            kemampuanTeknis: Math.ceil(Math.random() * 100),
-            kedisiplinan: Math.ceil(Math.random() * 100),
-            komunikasi: Math.ceil(Math.random() * 100),
-            kerjaSama: Math.ceil(Math.random() * 100),
-            nilaiAkhir: (Math.random() * 1).toFixed(3)
-          },
-          {
-            noPenilaian: "PK0001",
-            tglPenilaian: "10-07-2017",
-            nik: "167109287799743",
-            namaKaryawan: "Faisal Albana",
-            namaJabatan: "Backend Engineer",
-            namaDivisi: "Div. Engineering",
-            periode: 2021,
-            prestasiPekerjaan: Math.ceil(Math.random() * 100),
-            kemampuanTeknis: Math.ceil(Math.random() * 100),
-            kedisiplinan: Math.ceil(Math.random() * 100),
-            komunikasi: Math.ceil(Math.random() * 100),
-            kerjaSama: Math.ceil(Math.random() * 100),
-            nilaiAkhir: (Math.random() * 1).toFixed(3)
+              return {
+                text: e.nama,
+                value,
+                sortable: false,
+              };
+            });
+
+            this.headers = [
+              { text: "No Penilaian", value: "noPenilaian", sortable: false },
+              { text: "Tgl Penilaian", value: "tglPenilaian", sortable: false },
+              { text: "NIK", value: "nik", sortable: false },
+              { text: "Nama Karyawan", value: "namaKaryawan", sortable: false, width: "321px" },
+              { text: "Jabatan", value: "namaJabatan", sortable: false },
+              { text: "Divisi", value: "namaDivisi", sortable: false },
+              { text: "Periode", value: "periode", sortable: false },
+              ...converted,
+              { text: "Nilai Akhir", value: "nilaiHasil", sortable: false },
+              { text: "Rangking", value: "no", sortable: false },
+            ];
           }
-        ];
-        data.map((d, index) => {
-          d.no = itemsPerPage * (page - 1) + (index + 1);
+        })
+        .catch((err) => {
+          throw new Error(err);
         });
-        this.items = [...data];
-        this.totalItem = meta.totalData;
-        this.totalPage = meta.totalPage;
-        this.loading = false;
-      }, 2000);
     },
+  },
+  mounted() {
+    this.getHeaderKriteria();
   },
   computed: {
     paginationProperties() {

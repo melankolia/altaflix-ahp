@@ -25,91 +25,101 @@
         <v-row>
           <v-col cols="12" xs="12" sm="6">
             <p class="mb-3 title-input">No Penilaian</p>
-            <v-text-field v-model="payload.noPenilaian" disabled hide-details filled solo label="Contoh : 1670192933" />
+            <v-text-field v-model="payload.noPenilaian" disabled hide-details filled solo label="Contoh : PK - 000 - 1" />
           </v-col>
           <v-col cols="12" xs="12" sm="6">
             <p class="mb-3 title-input">Tanggal Penilaian</p>
-            <v-text-field v-model="payload.tglPenilaian" disabled hide-details filled solo label="Contoh : 1670192933" />
+            <v-text-field v-model="payload.tglPenilaian" disabled hide-details filled solo />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12" xs="12" sm="6">
             <p class="mb-3 title-input">NIK</p>
-            <v-autocomplete :loading="loadingNIK" :items="itemsKaryawan" v-model="payload.nik" clearable hide-details
-              filled solo label="Contoh: 11111" item-text="nama" return-object />
+            <v-autocomplete :disabled="isUpdate" :loading="loadingNIK" :items="itemsKaryawan" v-model="payload.karyawan"
+              hide-details filled solo item-text="nama" return-object />
           </v-col>
           <v-col cols="12" xs="12" sm="6">
             <p class="mb-3 title-input">Nama Lengkap</p>
-            <v-text-field v-model="payload.namaKaryawan" disabled hide-details filled solo />
+            <v-text-field v-model="payload.karyawan.nama" disabled hide-details filled solo />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12" xs="12" sm="6">
             <p class="mb-3 title-input">Jabatan</p>
-            <v-text-field v-model="payload.namaJabatan" disabled hide-details filled solo />
+            <v-text-field v-model="payload.karyawan.jabatan" disabled hide-details filled solo />
           </v-col>
           <v-col cols="12" xs="12" sm="6">
             <p class="mb-3 title-input">Projek</p>
-            <v-text-field v-model="payload.namaProjek" disabled hide-details filled solo />
+            <v-text-field v-model="payload.karyawan.namaProjek" disabled hide-details filled solo />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12" xs="12" sm="6">
             <p class="mb-3 title-input">Divisi</p>
-            <v-text-field v-model="payload.namaDivisi" disabled hide-details filled solo />
+            <v-text-field v-model="payload.karyawan.namaDivisi" disabled hide-details filled solo />
           </v-col>
           <v-col cols="12" xs="12" sm="6">
             <p class="mb-3 title-input">Tanggal Masuk</p>
-            <v-text-field v-model="payload.tglMasuk" disabled hide-details filled solo />
+            <v-text-field v-model="payload.karyawan.tanggal_masuk" disabled hide-details filled solo />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12" xs="12" sm="6">
             <p class="mb-3 title-input">Lama Kerja</p>
-            <v-text-field v-model="payload.lamaKerja" disabled hide-details filled solo />
+            <v-text-field v-model="lamaKerja" disabled hide-details filled solo />
           </v-col>
           <v-col cols="12" xs="12" sm="6">
             <p class="mb-3 title-input">Periode</p>
-            <v-text-field v-model="payload.periode" hide-details filled solo />
+            <v-text-field disabled v-model="payload.periode" hide-details filled solo />
           </v-col>
         </v-row>
       </div>
       <div class="d-flex flex-column table-border rounded-lg pa-4" style="width: 60%;">
         <p class="header-subtitle font-weight-medium">Aspek Penilaian Kenaikan Jabatan Karyawan</p>
-        <v-row v-for="(e, i) in payload.penilaian" :key="i">
+        <ContentNotFound message="Data LOV Penilaian Not Found" :loading="loadingList" v-if="!isAvailableList">
+          <template v-slot:action>
+            <v-btn @click="() => getListPenilaian()" depressed color="header" class="rounded-lg outlined-custom">
+              <v-icon class="mr-1" small>mdi-reload</v-icon>
+              <p class="header-button-back ma-0">Reload</p>
+            </v-btn>
+          </template>
+        </ContentNotFound>
+        <v-row v-for="(e, i) in listAspekPenilaian" :key="i">
           <v-col cols="12" xs="12" sm="4">
-            <p class="mb-3 title-input">{{ i | camelToTitle }}</p>
-            <v-select :items="itemsSubkriteria[i]" v-model="payload.penilaian[i]" clearable hide-details filled solo
-              item-text="subkriteria" return-object />
+            <p class="mb-3 title-input">{{ e.nama }}</p>
+            <v-select :items="e.subkriteria" v-model="payload.aspek_penilaian[i]" hide-details filled solo
+              item-text="nama" return-object />
           </v-col>
-          <v-col cols="12" xs="12" sm="2">
-            <p class="mb-3 title-input">Nilai</p>
-            <v-text-field v-model="payload.penilaian[i].nilai" disabled hide-details filled solo />
-          </v-col>
-          <v-col cols="12" xs="12" sm="3">
-            <p class="mb-3 title-input">Bobot Kriteria</p>
-            <v-text-field v-model="payload.penilaian[i].bobotKriteria" disabled hide-details filled solo />
-          </v-col>
-          <v-col cols="12" xs="12" sm="3">
-            <p class="mb-3 title-input">Bobot Subkriteria</p>
-            <v-text-field v-model="payload.penilaian[i].bobotSubkriteria" disabled hide-details filled solo />
-          </v-col>
+          <template>
+            <v-col cols="12" xs="12" sm="2">
+              <p class="mb-3 title-input">Nilai</p>
+              <v-text-field v-model="payload.aspek_penilaian[i].nilai" disabled hide-details filled solo />
+            </v-col>
+            <v-col cols="12" xs="12" sm="3">
+              <p class="mb-3 title-input">Bobot Kriteria</p>
+              <v-text-field v-model="payload.aspek_penilaian[i].bobotKriteria" disabled hide-details filled solo />
+            </v-col>
+            <v-col cols="12" xs="12" sm="3">
+              <p class="mb-3 title-input">Bobot Subkriteria</p>
+              <v-text-field v-model="payload.aspek_penilaian[i].bobot_prioritas" disabled hide-details filled solo />
+            </v-col>
+          </template>
         </v-row>
         <div class="d-flex flex-row justify-end mx-4 my-12 mb-6 border border-t border-black">
-          <v-btn depressed x-large color="primary">Calculate</v-btn>
+          <v-btn @click="handleCalculate" depressed x-large color="primary">Calculate</v-btn>
         </div>
         <hr class="mt-8 mb-4">
         <div class="d-flex flex-column my-4">
           <v-row>
             <v-col cols="12" xs="12" sm="4">
               <p class="mb-3 title-input">Nilai Hasil</p>
-              <v-text-field v-model="payload.nilaiHasil" disabled hide-details filled solo label="Contoh : 1670192933" />
+              <v-text-field v-model="payload.nilaiHasil" disabled hide-details filled solo />
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="12" xs="12" sm="4">
               <p class="mb-3 title-input">Persentase</p>
-              <v-text-field v-model="payload.persentase" disabled hide-details filled solo label="Contoh : 1670192933" />
+              <v-text-field v-model="persentase" disabled hide-details filled solo />
             </v-col>
           </v-row>
         </div>
@@ -119,162 +129,45 @@
 </template>
 
 <script>
-import { USER } from "@/router/name.types";
-import TenagaAhliService from "@/services/resources/tenaga-ahli.service";
+const ContentNotFound = () => import("../../../components/Content/NotFound");
+
+import { PENILAIAN } from "@/router/name.types";
+import PenilaianService from "@/services/resources/penilaian.service";
+import KaryawanService from "@/services/resources/karyawan.service";
 
 export default {
+  components: {
+    ContentNotFound,
+  },
   data() {
     return {
+      id: this.$route.params?.penilaianId,
       loading: false,
       loadingNIK: false,
       itemsKaryawan: [],
 
       payload: {
         noPenilaian: null,
-        tglPenilaian: null,
-        nik: null,
-        namaKaryawan: null,
-        namaJabatan: null,
-        namaDivisi: null,
-        periode: null,
-        penilaian: {
-          prestasiPekerjaan: {
-            subkriteria: null,
-            nilai: null,
-            bobotKriteria: null,
-            bobotSubkriteria: null
-          },
-          kemampuanTeknis: {
-            subkriteria: null,
-            nilai: null,
-            bobotKriteria: null,
-            bobotSubkriteria: null
-          },
-          kedisiplinan: {
-            subkriteria: null,
-            nilai: null,
-            bobotKriteria: null,
-            bobotSubkriteria: null
-          },
-          komunikasi: {
-            subkriteria: null,
-            nilai: null,
-            bobotKriteria: null,
-            bobotSubkriteria: null
-          },
-          kerjaSama: {
-            subkriteria: null,
-            nilai: null,
-            bobotKriteria: null,
-            bobotSubkriteria: null
-          },
+        tglPenilaian: this.$DateTime.now().setLocale("id")
+          .toFormat("dd-MM-yyyy"),
+        periode: this.$DateTime.now().year,
+        karyawan: {
+          nik: null,
+          nama: null,
+          jabatan: null,
+          namaDivisi: null,
+          tanggal_masuk: null,
+          lama_kerja: null,
         },
+        aspek_penilaian: [
+
+        ],
         nilaiHasil: null,
         persentase: null,
       },
 
-      itemsSubkriteria: {
-        prestasiPekerjaan: [
-          {
-            subkriteria: 'Sangat Baik',
-            nilai: 90,
-            bobotKriteria: 0.511,
-            bobotSubkriteria: 0.699
-          },
-          {
-            subkriteria: 'Baik',
-            nilai: 70,
-            bobotKriteria: 0.511,
-            bobotSubkriteria: 0.699
-          },
-          {
-            subkriteria: 'Cukup',
-            nilai: 90,
-            bobotKriteria: 0.511,
-            bobotSubkriteria: 0.699
-          },
-        ],
-        kemampuanTeknis: [
-          {
-            subkriteria: 'Sangat Baik',
-            nilai: 90,
-            bobotKriteria: 0.511,
-            bobotSubkriteria: 0.699
-          },
-          {
-            subkriteria: 'Baik',
-            nilai: 70,
-            bobotKriteria: 0.511,
-            bobotSubkriteria: 0.699
-          },
-          {
-            subkriteria: 'Cukup',
-            nilai: 90,
-            bobotKriteria: 0.511,
-            bobotSubkriteria: 0.699
-          },
-        ],
-        kedisiplinan: [
-          {
-            subkriteria: 'Sangat Baik',
-            nilai: 90,
-            bobotKriteria: 0.511,
-            bobotSubkriteria: 0.699
-          },
-          {
-            subkriteria: 'Baik',
-            nilai: 70,
-            bobotKriteria: 0.511,
-            bobotSubkriteria: 0.699
-          },
-          {
-            subkriteria: 'Cukup',
-            nilai: 90,
-            bobotKriteria: 0.511,
-            bobotSubkriteria: 0.699
-          },
-        ],
-        komunikasi: [
-          {
-            subkriteria: 'Sangat Baik',
-            nilai: 90,
-            bobotKriteria: 0.511,
-            bobotSubkriteria: 0.699
-          },
-          {
-            subkriteria: 'Baik',
-            nilai: 70,
-            bobotKriteria: 0.511,
-            bobotSubkriteria: 0.699
-          },
-          {
-            subkriteria: 'Cukup',
-            nilai: 90,
-            bobotKriteria: 0.511,
-            bobotSubkriteria: 0.699
-          },
-        ],
-        kerjaSama: [
-          {
-            subkriteria: 'Sangat Baik',
-            nilai: 90,
-            bobotKriteria: 0.511,
-            bobotSubkriteria: 0.699
-          },
-          {
-            subkriteria: 'Baik',
-            nilai: 70,
-            bobotKriteria: 0.511,
-            bobotSubkriteria: 0.699
-          },
-          {
-            subkriteria: 'Cukup',
-            nilai: 90,
-            bobotKriteria: 0.511,
-            bobotSubkriteria: 0.699
-          },
-        ]
-      }
+      listAspekPenilaian: [],
+      loadingList: false
     };
   },
   methods: {
@@ -293,45 +186,55 @@ export default {
         doc.style.backgroundSize = "contain";
       });
     },
-    getDetails() {
+    getDetail() {
       this.$emit("handleLoading", true);
       this.loading = true;
-      TenagaAhliService.getDetail(this.id)
-        .then(({ data: { code, data, message } }) => {
-          if (code == 200) {
+      PenilaianService.getDetail(this.id)
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            console.log(result);
             this.payload = {
               ...this.payload,
-              ...data,
-            };
-
-            if (data.ttl) {
-              const ttl = data.ttl.split(", ");
-              if (ttl.length > 0 && ttl.length <= 2) {
-                this.payload.tempat_lahir = ttl[0];
-              }
+              nilai_id: result.nilai_id,
+              noPenilaian: result.noPenilaian,
+              karyawan: {
+                karyawan_id: result.karyawan_id,
+                nik: result.nik,
+                nama: result.namaKaryawan,
+                jabatan: result.namaJabatan,
+                namaDivisi: result.namaDivisi,
+                namaProjek: result.namaProjek,
+                tanggal_masuk: result.tanggal_masuk,
+              },
+              aspek_penilaian: [...result.aspek_penilaian],
+              oriAspek_penilaian: [...result.aspek_penilaian]
             }
+            // this.payload = {
+            //   ...this.payload,
+            //   ...result,
+            // };
 
-            if (data.image) {
-              fetch(data.image)
-                .then((response) => response.blob())
-                .then((blob) => {
-                  this.createBase64Image(blob).then((e) => {
-                    this.payload.files = blob;
-                    const doc = document.getElementById("preview-photo");
-                    doc.style.background = "none";
-                    doc.style.backgroundImage =
-                      'url("' + e.target.result + '")';
-                    doc.style.backgroundPosition = "center";
-                    doc.style.backgroundRepeat = "no-repeat";
-                    doc.style.backgroundSize = "contain";
-                  });
-                });
-            }
+            // if (data.image) {
+            //   fetch(data.image).aspek_.aspek_penilaian
+            //     .then((response) => response.blob())
+            //     .then((blob) => {
+            //       this.createBase64Image(blob).then((e) => {
+            //         this.payload.files = blob;
+            //         const doc = document.getElementById("preview-photo");
+            //         doc.style.background = "none";
+            //         doc.style.backgroundImage =
+            //           'url("' + e.target.result + '")';
+            //         doc.style.backgroundPosition = "center";
+            //         doc.style.backgroundRepeat = "no-repeat";
+            //         doc.style.backgroundSize = "contain";
+            //       });
+            //     });
+            // }
           } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
               message:
-                message || "Gagal Memuat Data Tentang Diri Tenaga Kependidikan",
+                message || "Gagal Memuat Data Penilaian",
               color: "error",
             });
           }
@@ -339,7 +242,7 @@ export default {
         .catch((err) => {
           this.$store.commit("snackbar/setSnack", {
             show: true,
-            message: "Gagal Memuat Data Tentang Diri Tenaga Kependidikan",
+            message: "Gagal Memuat Data Penilaian",
             color: "error",
           });
           console.error(err);
@@ -349,7 +252,7 @@ export default {
           this.$emit("handleLoading", false);
         });
     },
-    getDetail() {
+    getDetails() {
       this.$emit("handleLoading", true);
       setTimeout(() => {
 
@@ -357,108 +260,184 @@ export default {
       }, 2000);
     },
     handleSubmit() {
+
+      const payload = {
+        nilai_id: this.payload?.nilai_id,
+        karyawan_id: this.payload.karyawan?.karyawan_id,
+        nilai_hasil: this.payload.nilaiHasil,
+        persentase: this.payload.persentase,
+        lama_kerja: this.payload.karyawan.lama_kerja,
+        periode: this.payload.periode,
+        no_penilaian: this.payload.noPenilaian,
+        tanggal_penilaian: this.payload.tglPenilaian,
+        aspek_penilaian: this.payload.aspek_penilaian.map((e, i) => {
+          if (this.isUpdate) {
+            return {
+              penilaian_id: this.payload.oriAspek_penilaian[i].penilaian_id,
+              subkriteria_id: e.subkriteria_id
+            }
+          }
+          return { subkriteria_id: e.subkriteria_id }
+        })
+      };
+
       this.$emit("handleLoading", true);
-      this.createBase64Image(this.payload.files)
-        .then((e) => {
-          const tanggal_lahir = this.$DateTime
-            .fromISO(this.payload.tanggalLahir)
-            .setLocale("id")
-            .toFormat("dd-MM-yyyy");
 
-          console.log({ payload: this.payload });
-
-          const payload = {
-            image: e.target.result,
-            nama: this.payload.nama,
-            jenis_kelamin: this.payload.jenis_kelamin || "-",
-            ttl: `${this.payload.tempat_lahir}, ${tanggal_lahir}` || "-",
-            nip_karpeg: this.payload.nip_karpeg || "-",
-            pendidikan: this.payload.pendidikan || "-",
-            mulai_bertugas: this.payload.mulai_bertugas || "-",
-            jabatan: this.payload.jabatan || "-",
-            gol_pangkat: this.payload.gol_pangkat || "-",
-            tmt_pangkat: this.payload.tmt_pangkat || "-",
-            sk_pertama: this.payload.sk_pertama || "-",
-            gaji_pokok: this.payload.gaji_pokok || "-",
-            mk_gol_tahun: this.payload.mk_gol_tahun || "-",
-            mk_gol_bulan: this.payload.mk_gol_bulan || "-",
-            k_tk: this.payload.k_tk || "-",
-            yad_pangkat: this.payload.yad_pangkat || "-",
-            yad_gaji: this.payload.yad_gaji || "-",
-            nuptk: this.payload.nuptk || "-",
-          };
-          if (this.payload?.tenaga_ahli_id)
-            payload.tenaga_ahli_id = this.payload.tenaga_ahli_id;
-          TenagaAhliService.addTenagaAhli(payload)
-            .then(({ data: { success, message } }) => {
-              if (success == true) {
-                this.$store.commit("snackbar/setSnack", {
-                  show: true,
-                  message: "Berhasil Menyimpan Data Tenaga Kependidikan",
-                  color: "success",
-                });
-                this.$router.replace({ name: USER.BROWSE });
-                this.$vuetify.goTo(1, {
-                  duration: 300,
-                  offset: 0,
-                  easing: "easeInOutCubic",
-                });
-              } else {
-                this.$store.commit("snackbar/setSnack", {
-                  show: true,
-                  message:
-                    message || "Gagal Menyimpan Data Tenaga Kependidikan",
-                  color: "error",
-                });
-              }
+      PenilaianService.addPenilaian(payload)
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message: "Berhasil Menyimpan Data Karyawan",
+              color: "success",
+            });
+            this.$router.replace({
+              name: PENILAIAN.BROWSE
             })
-            .catch((err) => {
-              console.error(err);
-              this.$store.commit("snackbar/setSnack", {
-                show: true,
-                message: "Gagal Menyimpan Data Tenaga Kependidikan",
-                color: "error",
-              });
-            })
-            .finally(() => this.$emit("handleLoading", false));
+          } else {
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message: result || "Gagal Memuat Data LOV Penilaian",
+              color: "error",
+            });
+          }
         })
         .catch((err) => {
-          console.error(err);
-          this.$vuetify.goTo("#preview-photo", {
-            duration: 500,
-            offset: 0,
-            easing: "easeInOutCubic",
-          });
           this.$store.commit("snackbar/setSnack", {
             show: true,
-            message: "File Foto Harus Diisi",
+            message: "Gagal Memuat Data LOV Penilaian",
             color: "error",
           });
-          this.$emit("handleLoading", false);
-        });
+          console.error(err)
+        })
+        .finally(() => this.$emit("handleLoading", false))
+
     },
+    getListPenilaian() {
+      this.loadingList = true;
+      PenilaianService.getLOVPenilaian()
+        .then(({ data: { result, message } }) => {
+          // console.log(result);
+          if (message == "OK") {
+            this.listAspekPenilaian = [...result]
+            this.payload.aspek_penilaian = [
+              ...result.map((e) => ({ nilai: null, bobotKriteria: e.bobot_prioritas, bobot_prioritas: null }))
+            ]
+            // console.log(this.payload);
+          } else {
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message: "Gagal Memuat Data LOV Penilaian",
+              color: "error",
+            });
+          }
+        })
+        .catch((err) => {
+          this.$store.commit("snackbar/setSnack", {
+            show: true,
+            message: "Gagal Memuat Data LOV Penilaian",
+            color: "error",
+          });
+          console.error(err)
+        })
+        .finally(() => this.loadingList = false)
+    },
+    handleCalculate() {
+      const total = this.payload.aspek_penilaian.reduce(((c, e) => +c + (e.bobot_prioritas * e.bobotKriteria)), 0)
+      this.payload.nilaiHasil = total;
+      this.payload.persentase = (total * 100).toFixed(0)
+    },
+    getListKaryawan() {
+      this.loadingNIK = true;
+      KaryawanService.getList()
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            this.itemsKaryawan = [...result]
+          } else {
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message: result || "Gagal Memuat Data LOV Karyawan",
+              color: "error",
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err)
+          this.$store.commit("snackbar/setSnack", {
+            show: true,
+            message: "Gagal Memuat Data LOV Penilaian",
+            color: "error",
+          });
+        })
+        .finally(() => this.loadingNIK = false)
+    },
+    getListNilaiId() {
+      PenilaianService.getLastNilaiId()
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            this.payload.noPenilaian = `PK-${result.latest_id + 1}`
+          } else {
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message: result || "Gagal Memuat Data LOV Karyawan",
+              color: "error",
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err)
+          this.$store.commit("snackbar/setSnack", {
+            show: true,
+            message: "Gagal Memuat Data LOV Penilaian",
+            color: "error",
+          });
+        })
+        .finally(() => this.loadingNIK = false)
+    }
+  },
+  mounted() {
+    this.getListPenilaian();
+    this.getListKaryawan();
+    this.getListNilaiId();
+
+    this.isUpdate && this.getDetail();
   },
   computed: {
+    isUpdate() {
+      return !!this.id;
+    },
     isAvailable() {
-      return this.payload?.tenaga_ahli_id;
+      return this.payload?.penilaian_id
     },
-    tanggalLahir() {
-      if (this.payload.tanggalLahir) {
-        return this.$DateTime
-          .fromISO(this.payload.tanggalLahir)
-          .setLocale('id')
-          .toFormat("dd LLLL yyyy");
-      } else return "-";
+    isAvailableList() {
+      return this.listAspekPenilaian.length > 0;
     },
-    tanggalMasuk() {
-      if (this.payload.tanggalMasuk) {
-        return this.$DateTime
-          .fromISO(this.payload.tanggalMasuk)
-          .setLocale('id')
-          .toFormat("dd LLLL yyyy");
-      } else return "-";
+    persentase() {
+      return `${this.payload.persentase || '-'} %`
     },
+    lamaKerja() {
+      const lamaKerja = this.payload.karyawan?.lama_kerja;
+      return lamaKerja ? `${lamaKerja < 1 ? '< 1' : lamaKerja} Tahun` : null
+    }
   },
+  watch: {
+    'payload.karyawan': {
+      handler(val) {
+        if (!val?.lama_kerja) {
+          const { result } = this.$DateTime.fromFormatExplain(val.tanggal_masuk, "dd-MM-yyyy")
+          const resultDate = `${result.year}-${result.month < 10 ? `0${result.month}` : `${result.month}`}-${result.day < 10 ? `0${result.day}` : result.day}`
+
+          const date1 = this.$DateTime.fromISO(this.$DateTime.utc().toISO());
+          const date2 = this.$DateTime.fromISO(resultDate);
+          // console.log(date2);
+
+          // console.log(date1);
+          const dateNow = date1.diff(date2, ["years"]);
+          this.payload.karyawan.lama_kerja = dateNow.years.toFixed(0);
+        }
+      }, deep: true
+    }
+  }
 };
 </script>
 

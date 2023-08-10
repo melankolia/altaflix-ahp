@@ -15,25 +15,36 @@
         </v-list>
 
         <v-list style="transition: all 0.7s" :class="{ 'mx-5': !mini, 'mx-4': mini }" nav>
-          <v-list-group v-model="item.active" v-for="(item, i) in items" :key="'a' + i"
-            :active-class="'primary white--text'" style="transition: all 0.7s">
-            <template v-slot:activator>
+          <template v-for="(item, i) in items">
+            <v-list-group v-if="item.subItems" v-model="item.active" :key="'a' + i" :active-class="'primary white--text'"
+              style="transition: all 0.7s">
+              <template v-slot:activator>
+                <v-list-item-action :class="{ 'mr-4': !mini }" class="d-flex flex-row justify-center align-center">
+                  <v-icon>{{ item.icon }}</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <p class="ma-0 item-style">{{ item.title }}</p>
+                </v-list-item-content>
+              </template>
+              <v-list-item v-show="!mini" style="transition: all 0.7s" v-for="(subItem, si) in item.subItems"
+                :key="'b' + si" :to="subItem.to" :active-class="'subMenu black--text'">
+                <v-list-item-action :class="{ 'mr-4': !mini }" class="d-flex flex-row justify-center align-center">
+                </v-list-item-action>
+                <v-list-item-content>
+                  <p class="ma-0 item-style">{{ subItem.title }}</p>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-group>
+            <v-list-item v-else v-show="!mini" style="transition: all 0.7s" :key="'b' + i" :to="item.to"
+              :active-class="'subMenu black--text'">
               <v-list-item-action :class="{ 'mr-4': !mini }" class="d-flex flex-row justify-center align-center">
                 <v-icon>{{ item.icon }}</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <p class="ma-0 item-style">{{ item.title }}</p>
               </v-list-item-content>
-            </template>
-            <v-list-item v-show="!mini" style="transition: all 0.7s" v-for="(subItem, si) in item.subItems"
-              :key="'b' + si" :to="subItem.to" :active-class="'subMenu black--text'">
-              <v-list-item-action :class="{ 'mr-4': !mini }" class="d-flex flex-row justify-center align-center">
-              </v-list-item-action>
-              <v-list-item-content>
-                <p class="ma-0 item-style">{{ subItem.title }}</p>
-              </v-list-item-content>
             </v-list-item>
-          </v-list-group>
+          </template>
         </v-list>
       </div>
       <v-list style="transition: all 0.7s" :class="{ 'mx-5': !mini, 'mx-4': mini }" nav>
@@ -84,6 +95,11 @@ export default {
     return {
       mini: true,
       items: [
+        {
+          icon: "mdi-home-outline",
+          title: "Beranda",
+          to: { path: '/' },
+        },
         {
           icon: "mdi-database-outline",
           title: "Data Master",
