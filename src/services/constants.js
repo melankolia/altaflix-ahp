@@ -31,12 +31,36 @@ export const KRITERIA = {
   DELETE: `${kriteria}`,
 };
 
+const subkriteria = "/subkriteria";
+export const SUBKRITERIA = {
+  CREATE: `${subkriteria}`,
+  BROWSE: `${subkriteria}`,
+  DETAIL: `${subkriteria}`,
+  DELETE: `${subkriteria}`,
+};
+
 const karyawan = "/karyawan";
 export const KARYAWAN = {
   CREATE: `${karyawan}`,
   BROWSE: `${karyawan}`,
   DETAIL: `${karyawan}`,
   DELETE: `${karyawan}`,
+};
+
+const perhitungan = "/perhitungan";
+export const PERHITUNGAN = {
+  KRITERIA: {
+    CREATE: `${perhitungan}/kriteria`,
+    BROWSE: `${perhitungan}/kriteria`,
+    DETAIL: `${perhitungan}/kriteria`,
+    DELETE: `${perhitungan}/kriteria`,
+  },
+  SUBKRITERIA: {
+    CREATE: `${perhitungan}/subkriteria`,
+    BROWSE: `${perhitungan}/subkriteria`,
+    DETAIL: `${perhitungan}/subkriteria`,
+    DELETE: `${perhitungan}/subkriteria`,
+  },
 };
 
 const kelas = "kelas/v1";

@@ -11,28 +11,46 @@
         <p class="ma-0 tabs-title">{{ item.text }}</p>
       </v-tab>
     </v-tabs>
-    <DetailAHP class="mt-4" :value="tabs[tab].val" />
+    <DetailAHP class="mt-4" :value="tabs[tab].val" :loadingKriteria="loadingKriteria" />
   </div>
 </template>
 
 <script>
-import KelasService from "@/services/resources/kelas.service";
-const DetailAHP = () => import("@/views/PerhitunganAHP/Detail")
+import PerhitunganAHPService from "@/services/resources/perhitungan.service";
+import KriteriaService from "@/services/resources/kriteria.service";
+const DetailAHP = () => import("@/views/PerhitunganAHP/Detail");
 
 export default {
   components: {
-    DetailAHP
+    DetailAHP,
   },
   data() {
     return {
+      loadingKriteria: false,
+
       tab: 0,
       tabs: [
         { text: "Setting Bobot Nilai Kriteria", val: "all" },
-        { text: "Setting Bobot Nilai Sub-kriteria Prestasi Pekerjaan", val: "prestasiPekerjaan" },
-        { text: "Setting Bobot Nilai Sub-kriteria Kemampuan Teknis", val: "kemampuanTeknis" },
-        { text: "Setting Bobot Nilai Sub-kriteria Kedisiplinan", val: "kedisiplinan" },
-        { text: "Setting Bobot Nilai Sub-kriteria Komunikasi", val: "komunikasi" },
-        { text: "Setting Bobot Nilai Sub-kriteria Kerjasama", val: "kerjasama" },
+        // {
+        //   text: "Setting Bobot Nilai Sub-kriteria Prestasi Pekerjaan",
+        //   val: "prestasiPekerjaan",
+        // },
+        // {
+        //   text: "Setting Bobot Nilai Sub-kriteria Kemampuan Teknis",
+        //   val: "kemampuanTeknis",
+        // },
+        // {
+        //   text: "Setting Bobot Nilai Sub-kriteria Kedisiplinan",
+        //   val: "kedisiplinan",
+        // },
+        // {
+        //   text: "Setting Bobot Nilai Sub-kriteria Komunikasi",
+        //   val: "komunikasi",
+        // },
+        // {
+        //   text: "Setting Bobot Nilai Sub-kriteria Kerjasama",
+        //   val: "kerjasama",
+        // },
       ],
       doubleClickPrevent: false,
     };
@@ -40,10 +58,10 @@ export default {
   methods: {
     getLists() {
       const { page, itemsPerPage } = this.options;
-      this.createToken(KelasService.cancelReq().source());
+      this.createToken(PerhitunganAHPService.cancelReq().source());
       this.loading = true;
       this.items = [];
-      KelasService.getAllKelas(
+      PerhitunganAHPService.getAllKelas(
         {
           search: this.search || null,
           tab: this.tabs[this.tab].val,
@@ -160,6 +178,35 @@ export default {
         this.loading = false;
       }, 2000);
     },
+    getListKriteria() {
+      this.loadingKriteria = true;
+      this.tabs = [...this.tabs, { text: "Loading ...", val: "Loading" }]
+
+      KriteriaService.getList()
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            const converted = result.map(e => {
+              return {
+                text: `Setting Bobot Nilai ${e.nama}`,
+                val: e.kriteria_id
+              }
+            })
+            this.tabs = [
+              { text: "Setting Bobot Nilai Kriteria", val: "all" },
+              ...converted
+            ]
+          }
+        })
+        .catch(() => {
+          this.tabs = [
+            { text: "Setting Bobot Nilai Kriteria", val: "all" }
+          ]
+        })
+        .finally(() => this.loadingKriteria = false)
+    }
+  },
+  mounted() {
+    this.getListKriteria();
   },
 };
 </script>

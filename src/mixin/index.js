@@ -6,6 +6,9 @@ Vue.mixin({
     };
   },
   methods: {
+    convertToCamelCase(str) {
+      return str && str.split(" ").map((e, i) =>  i != 0 ? e[0].toUpperCase() + e.substring(1) : e[0].toLowerCase() + e.substring(1)).join("")
+    },
     customPagination(props) {
       return `Show ${
         (props.pagination.page - 1) * props.pagination.itemsPerPage + 1
