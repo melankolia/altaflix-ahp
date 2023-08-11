@@ -155,7 +155,7 @@ export default {
           link.href = url;
           link.setAttribute(
             "download",
-            `Report Individu Nilai Karyawan.xlsx`
+            `Report Individu Nilai Karyawan.pdf`
           );
           document.body.appendChild(link);
           link.click();

@@ -163,7 +163,7 @@ export default {
           link.href = url;
           link.setAttribute(
             "download",
-            `Report Seluruh Nilai Karyawan.xlsx`
+            `Report Seluruh Nilai Karyawan.pdf`
           );
           document.body.appendChild(link);
           link.click();
