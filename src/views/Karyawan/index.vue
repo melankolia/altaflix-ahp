@@ -13,7 +13,7 @@
       </v-btn>
     </div>
     <v-tabs v-model="tab" color="tabMenu">
-      <v-tab v-for="item in tabs" :key="item.val">
+      <v-tab v-for="item in tabs" :key="item.code">
         <p class="ma-0 tabs-title">{{ item.text }}</p>
       </v-tab>
     </v-tabs>
@@ -22,7 +22,7 @@
         <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" placeholder="Cari karyawan" hide-details solo
           dense class="rounded-lg"></v-text-field>
       </div>
-      <div style="width: 150px">
+      <div style="width: 200px">
         <v-select id="list" v-model="sortBy" :items="itemSortBy" placeholder="Sort By" solo hide-details dense
           class="rounded-lg" color="primary" item-text="text" item-value="value">
           <template #item="{ item }">
@@ -95,6 +95,7 @@
 </template>
 
 <script>
+import DivisiService from "@/services/resources/divisi.service";
 import KaryawanService from "@/services/resources/karyawan.service";
 import { KARYAWAN } from "@/router/name.types";
 const CustomFooter = () => import("@/components/Table/Footer");
@@ -106,16 +107,16 @@ export default {
   data() {
     return {
       search: "",
-      sortBy: "ASC",
+      sortBy: "karyawan.nama ASC",
       itemSortBy: [
         {
           text: "a-z Nama",
-          value: "ASC",
+          value: "karyawan.nama ASC",
           icon: "mdi-sort-ascending",
         },
         {
           text: "z-a Nama",
-          value: "DESC",
+          value: "karyawan.nama DESC",
           icon: "mdi-sort-descending",
         },
       ],
@@ -141,9 +142,7 @@ export default {
       },
       tab: "all",
       tabs: [
-        { text: "Lihat Semua Divisi", val: "all" },
-        { text: "Div. Engineering", val: "engineering" },
-        { text: "Div. Management", val: "management" },
+        { text: "Lihat Semua Divisi", code: "" }
       ],
       totalItem: 10,
       totalPage: 1,
@@ -223,7 +222,7 @@ export default {
       KaryawanService.getList(
         {
           search: this.search || null,
-          tab: this.tabs[this.tab].val,
+          tab: this.tabs[this.tab].code,
           page,
           limit: itemsPerPage,
           sort: this.sortBy,
@@ -257,6 +256,36 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
+    getListDivisi() {
+      DivisiService.getList()
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            this.tabs = [
+              { text: "Lihat Semua Divisi", code: "" },
+              ...result.map(e => {
+                return {
+                  text: e.nama,
+                  code: e.divisi_id
+                }
+              })
+            ]
+          } else {
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message: message || "Gagal Memuat Data Semua Divisi",
+              color: "error",
+            });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+
+        })
+        .finally(() => (this.loading = false));
+    },
+  },
+  mounted() {
+    this.getListDivisi();
   },
   computed: {
     paginationProperties() {

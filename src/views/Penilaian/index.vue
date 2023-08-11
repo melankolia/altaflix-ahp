@@ -13,16 +13,16 @@
       </v-btn>
     </div>
     <v-tabs v-model="tab" color="tabMenu">
-      <v-tab v-for="item in tabs" :key="item.val">
+      <v-tab v-for="item in tabs" :key="item.code">
         <p class="ma-0 tabs-title">{{ item.text }}</p>
       </v-tab>
     </v-tabs>
     <div class="d-flex flex-row justify-space-between header my-6 pa-3 rounded-lg">
       <div style="width: 288px">
-        <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" placeholder="Cari karyawan" hide-details solo
+        <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" placeholder="Cari Karyawan" hide-details solo
           dense class="rounded-lg"></v-text-field>
       </div>
-      <div style="width: 150px">
+      <div style="width: 200px">
         <v-select id="list" v-model="sortBy" :items="itemSortBy" placeholder="Sort By" solo hide-details dense
           class="rounded-lg" color="primary" item-text="text" item-value="value">
           <template #item="{ item }">
@@ -85,6 +85,7 @@
 </template>
 
 <script>
+import DivisiService from "@/services/resources/divisi.service";
 import PenilaianService from "@/services/resources/penilaian.service";
 import KriteriaService from "@/services/resources/kriteria.service";
 import { PENILAIAN } from "@/router/name.types";
@@ -97,16 +98,26 @@ export default {
   data() {
     return {
       search: "",
-      sortBy: "ASC",
+      sortBy: "nilai_hasil ASC",
       itemSortBy: [
         {
           text: "a-z Nama",
-          value: "ASC",
+          value: "karyawan.nama ASC",
           icon: "mdi-sort-ascending",
         },
         {
           text: "z-a Nama",
-          value: "DESC",
+          value: "karyawan.nama DESC",
+          icon: "mdi-sort-descending",
+        },
+        {
+          text: "a-z Rangking",
+          value: "nilai_hasil ASC",
+          icon: "mdi-sort-ascending",
+        },
+        {
+          text: "z-a Rangking",
+          value: "nilai_hasil DESC",
           icon: "mdi-sort-descending",
         },
       ],
@@ -124,11 +135,9 @@ export default {
       options: {
         page: 1,
       },
-      tab: "all",
+      tab: "",
       tabs: [
-        { text: "Lihat Semua Divisi", val: "all" },
-        { text: "Div. Engineering", val: "engineering" },
-        { text: "Div. Management", val: "management" },
+        { text: "Lihat Semua Divisi", code: "" }
       ],
       totalItem: 10,
       totalPage: 1,
@@ -197,7 +206,7 @@ export default {
       PenilaianService.getList(
         {
           search: this.search || null,
-          tab: this.tabs[this.tab].val,
+          tab: this.tabs[this.tab].code,
           page,
           limit: itemsPerPage,
           sort: this.sortBy,
@@ -255,7 +264,7 @@ export default {
               { text: "Periode", value: "periode", sortable: false },
               ...converted,
               { text: "Nilai Akhir", value: "nilaiHasil", sortable: false },
-              { text: "Rangking", value: "no", sortable: false },
+              { text: "Rangking", value: "rangking", sortable: false },
             ];
           }
         })
@@ -263,9 +272,37 @@ export default {
           throw new Error(err);
         });
     },
+    getListDivisi() {
+      DivisiService.getList()
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            this.tabs = [
+              { text: "Lihat Semua Divisi", code: "" },
+              ...result.map(e => {
+                return {
+                  text: e.nama,
+                  code: e.divisi_id
+                }
+              })
+            ]
+          } else {
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message: message || "Gagal Memuat Data Semua Divisi",
+              color: "error",
+            });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+
+        })
+        .finally(() => (this.loading = false));
+    },
   },
   mounted() {
     this.getHeaderKriteria();
+    this.getListDivisi();
   },
   computed: {
     paginationProperties() {

@@ -20,7 +20,7 @@ Vue.mixin({
       clearTimeout(this._timerId);
       this._timerId = setTimeout(() => {
         callback();
-      }, 100);
+      }, 250);
       this.cancelRequest && this.cancelReq();
     },
     cancelReq() {

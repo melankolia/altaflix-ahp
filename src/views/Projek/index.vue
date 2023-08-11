@@ -27,7 +27,7 @@
         <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" placeholder="Search" hide-details solo dense
           class="rounded-lg"></v-text-field>
       </div>
-      <div style="width: 150px">
+      <div style="width: 200px">
         <v-select id="list" v-model="sortBy" :items="itemSortBy" placeholder="Sort By" solo hide-details dense
           class="rounded-lg" color="primary" item-text="text" item-value="value">
           <template #item="{ item }">
@@ -107,26 +107,26 @@ export default {
   data() {
     return {
       search: "",
-      sortBy: "nama ASC",
+      sortBy: "projek.nama ASC",
       itemSortBy: [
         {
           text: "a-z Nama Projek",
-          value: "nama ASC",
+          value: "projek.nama ASC",
           icon: "mdi-sort-ascending",
         },
         {
           text: "z-a Nama Projek",
-          value: "nama DESC",
+          value: "projek.nama DESC",
           icon: "mdi-sort-descending",
         },
         {
-          text: "a-z Divisi",
-          value: "location ASC",
+          text: "a-z Kode",
+          value: "projek.code ASC",
           icon: "mdi-sort-ascending",
         },
         {
-          text: "z-a Divisi",
-          value: "location DESC",
+          text: "z-a Kode",
+          value: "projek.code DESC",
           icon: "mdi-sort-descending",
         },
       ],

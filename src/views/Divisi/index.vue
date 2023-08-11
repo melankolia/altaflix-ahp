@@ -14,10 +14,10 @@
     </div>
     <div class="d-flex flex-row justify-space-between header my-6 pa-3 rounded-lg">
       <div style="width: 288px">
-        <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" placeholder="Cari wali kelas atau kelas"
-          hide-details solo dense class="rounded-lg"></v-text-field>
+        <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" placeholder="Cari Divisi" hide-details solo dense
+          class="rounded-lg"></v-text-field>
       </div>
-      <div style="width: 150px">
+      <div style="width: 200px">
         <v-select id="list" v-model="sortBy" :items="itemSortBy" placeholder="Sort By" solo hide-details dense
           class="rounded-lg" color="primary" item-text="text" item-value="value">
           <template #item="{ item }">
@@ -98,16 +98,16 @@ export default {
   data() {
     return {
       search: "",
-      sortBy: "ASC",
+      sortBy: "nama ASC",
       itemSortBy: [
         {
           text: "a-z Nama",
-          value: "ASC",
+          value: "nama ASC",
           icon: "mdi-sort-ascending",
         },
         {
           text: "z-a Nama",
-          value: "DESC",
+          value: "nama DESC",
           icon: "mdi-sort-descending",
         },
       ],
