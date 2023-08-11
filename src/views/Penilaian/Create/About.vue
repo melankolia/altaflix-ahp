@@ -435,6 +435,11 @@ export default {
           this.payload.karyawan.lama_kerja = dateNow.years.toFixed(0);
         }
       }, deep: true
+    },
+    'payload.nilaiHasil': {
+      handler(val) {
+        val && !isNaN(val) && this.$emit("handleValid", true)
+      }, deep: true
     }
   }
 };

@@ -2,29 +2,22 @@
   <div class="d-flex flex-column mt-6 ml-7 mr-7 mb-12">
     <transition name="slide-fade" mode="out-in">
       <keep-alive>
-        <component @handleLoading="loading = $event" @handleNext="handleNext" ref="childComponent"
-          :is="selected.component" />
+        <component @handleValid="isValid = $event" @handleLoading="loading = $event" @handleNext="handleNext"
+          ref="childComponent" :is="selected.component" />
       </keep-alive>
     </transition>
     <v-row>
       <v-col cols="12" xs="12" sm="2">
         <v-btn @click="handlePrev" block depressed class="rounded-lg pa-6">
-          <p class="header-button-back ma-0">
+          <p class="ma-0">
             <span> Kembali </span>
           </p>
         </v-btn>
       </v-col>
       <v-col cols="12" xs="12" sm="2">
-        <v-btn @click="handleDelete" block depressed color="error" class="rounded-lg pa-6">
-          <p class="header-button-back ma-0">
-            <span> Delete </span>
-          </p>
-        </v-btn>
-      </v-col>
-      <v-col cols="12" xs="12" sm="2">
         <v-btn block @click="handleSubmit" depressed color="success" class="rounded-lg pa-6" :loading="loading"
-          :disabled="loading">
-          <p class="header-button-back ma-0">
+          :disabled="loading || !isValid">
+          <p class="ma-0">
             <span> {{ disabledNext ? "Save" : "Selanjutnya" }} </span>
           </p>
         </v-btn>
@@ -43,6 +36,7 @@ export default {
   },
   data() {
     return {
+      isValid: false,
       loading: false,
       selected: {
         id: 0,
