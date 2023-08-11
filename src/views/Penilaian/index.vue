@@ -74,7 +74,7 @@
       </v-data-table>
     </div>
     <div class="d-flex flex-row justify-end my-6">
-      <v-btn @click="handleCetakReport" depressed color="primary" class="rounded-lg" large>
+      <v-btn :loading="loadingReport" @click="handleCetakReport" depressed color="primary" class="rounded-lg" large>
         <p class="header-button-title ma-0">
           <v-icon class="mr-1">mdi-download-box-outline</v-icon>
           <span> Cetak Laporan </span>
@@ -134,7 +134,9 @@ export default {
       totalPage: 1,
       rowsPerPageItems: [10, 20, 50, 100],
       doubleClickPrevent: false,
-      PENILAIAN: PENILAIAN
+      PENILAIAN: PENILAIAN,
+
+      loadingReport: false,
     };
   },
   methods: {
@@ -144,7 +146,28 @@ export default {
       else if (head == "tglPenilaian") return "120px";
     },
     handleCetakReport() {
-      console.log("Cetak Report");
+      this.loadingReport = true;
+      PenilaianService.downloadFile()
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute(
+            "download",
+            `Report Seluruh Nilai Karyawan.xlsx`
+          );
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch(() => {
+          this.$store.commit("snackbar/setSnack", {
+            show: true,
+            message:
+              "Gagal Download Data Laporan",
+            color: "error",
+          });
+        })
+        .finally(() => this.loadingReport = false)
     },
     handleAdd() {
       this.$router.push({

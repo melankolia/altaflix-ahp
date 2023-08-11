@@ -45,6 +45,7 @@ export const KARYAWAN = {
   BROWSE: `${karyawan}`,
   DETAIL: `${karyawan}`,
   DELETE: `${karyawan}`,
+  LOV: `${karyawan}/nilai`,
 };
 
 const perhitungan = "/perhitungan";
@@ -71,4 +72,5 @@ export const PENILAIAN = {
   DELETE: `${penilaian}`,
   LOV: `${penilaian}/aspek_penilaian`,
   LATEST_ID: `${penilaian}/latest_id`,
+  DOWNLOAD: `${penilaian}/report`
 }

@@ -192,7 +192,6 @@ export default {
       PenilaianService.getDetail(this.id)
         .then(({ data: { result, message } }) => {
           if (message == "OK") {
-            console.log(result);
             this.payload = {
               ...this.payload,
               nilai_id: result.nilai_id,
@@ -349,7 +348,7 @@ export default {
     },
     getListKaryawan() {
       this.loadingNIK = true;
-      KaryawanService.getList()
+      KaryawanService[this.isUpdate ? 'getList' : 'getListLOV']()
         .then(({ data: { result, message } }) => {
           if (message == "OK") {
             this.itemsKaryawan = [...result]

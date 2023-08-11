@@ -641,9 +641,6 @@ export default {
         .finally(() => this.loadingSave = false)
     },
     saveSubkriteria() {
-      console.log(this.items);
-      console.log(this.itemsHasil);
-      console.log(this.itemsPrioritas);
       const matriks = this.items.map(e => ({ ...e }));
       matriks.map(e => {
         delete e.no

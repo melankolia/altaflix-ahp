@@ -5,6 +5,9 @@ const KaryawanService = {
   getList(params, token) {
     return MainInstance.query(KARYAWAN.BROWSE, { params, ...token });
   },
+  getListLOV(params, token) {
+    return MainInstance.query(KARYAWAN.LOV, { params, ...token });
+  },
   getDetail(id) {
     return MainInstance.fetch(KARYAWAN.DETAIL, id);
   },

@@ -14,13 +14,13 @@
             <span> Edit Data </span>
           </p>
         </v-btn>
-        <v-btn @click="handleDelete" depressed class="rounded-lg mr-4" color="error">
+        <v-btn :loading="loadingDelete" @click="handleDelete" depressed class="rounded-lg mr-4" color="error">
           <p class="header-button-export ma-0">
             <v-icon class="mr-1" small>mdi-delete</v-icon>
             <span> Delete Data </span>
           </p>
         </v-btn>
-        <v-btn depressed class="rounded-lg" color="primary">
+        <v-btn :loading="loadingReport" @click="handleCetakReport" depressed class="rounded-lg" color="primary">
           <p class="header-button-export ma-0">
             <v-icon class="mr-1" small>mdi-download</v-icon>
             <span> Cetak Report Individu </span>
@@ -59,7 +59,8 @@
 </template>
 
 <script>
-import { PENILAIAN } from "../../../router/name.types";
+import { PENILAIAN } from "@/router/name.types";
+import PenilaianService from "@/services/resources/penilaian.service"
 const About = () => import("@/views/Penilaian/Detail/About.vue");
 
 export default {
@@ -68,7 +69,7 @@ export default {
   },
   data() {
     return {
-      id: this.$router.params?.nilaiId,
+      id: this.$route.params?.penilaianId,
       items: {
         nama: null,
         jabatan: null
@@ -77,6 +78,9 @@ export default {
       tabs: [
         { text: "Penilaian Karyawan", component: "About" },
       ],
+
+      loadingDelete: false,
+      loadingReport: false
     };
   },
   computed: {
@@ -92,7 +96,7 @@ export default {
       this.$router.push({
         name: PENILAIAN.UPDATE,
         params: {
-          nilaiId: this.nilaiId
+          penilaianId: this.id
         }
       });
     },
@@ -106,41 +110,66 @@ export default {
         },
         callback: (confirm) => {
           if (confirm) {
-            // this.requestDelete(item);
-            console.log("ADADA");
+            this.requestDelete();
           }
         },
       });
     },
-    // requestDelete(item) {
-    //   this.loading = true;
-    //   DivisiService.deleteDivisi(item.divisi_id,)
-    //     .then(({ data: { message } }) => {
-    //       if (message == "OK") {
-    //         this.$store.commit("snackbar/setSnack", {
-    //           show: true,
-    //           message: `Berhasil Menghapus data Divisi`,
-    //           color: "success",
-    //         });
-    //         this.getList();
-    //       } else {
-    //         this.$store.commit("snackbar/setSnack", {
-    //           show: true,
-    //           message: message || `Gagal Menghapus data Divisi`,
-    //           color: "error",
-    //         });
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       console.error(err);
-    //       this.$store.commit("snackbar/setSnack", {
-    //         show: true,
-    //         message: `Gagal Menghapus data Divisi`,
-    //         color: "error",
-    //       });
-    //     })
-    //     .finally(() => (this.loading = false));
-    // },
+    requestDelete() {
+      this.loadingDelete = true;
+      PenilaianService.deletePenilaian(this.id)
+        .then(({ data: { message } }) => {
+          if (message == "OK") {
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message: `Berhasil Menghapus data Nilai`,
+              color: "success",
+            });
+            this.$router.replace({
+              name: PENILAIAN.BROWSE
+            })
+          } else {
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message: message || `Gagal Menghapus data Nilai`,
+              color: "error",
+            });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$store.commit("snackbar/setSnack", {
+            show: true,
+            message: `Gagal Menghapus data Divisi`,
+            color: "error",
+          });
+        })
+        .finally(() => (this.loading = false));
+    },
+    handleCetakReport() {
+      this.loadingReport = true;
+      PenilaianService.downloadFile(this.id)
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute(
+            "download",
+            `Report Individu Nilai Karyawan.xlsx`
+          );
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch(() => {
+          this.$store.commit("snackbar/setSnack", {
+            show: true,
+            message:
+              "Gagal Download Data Laporan",
+            color: "error",
+          });
+        })
+        .finally(() => this.loadingReport = false)
+    },
   },
 };
 </script>

@@ -20,6 +20,13 @@ const KriteriaService = {
   deletePenilaian(data) {
     return MainInstance.deleteSlug(PENILAIAN.DELETE, data);
   },
+  downloadFile(id, params = {}, type = "arraybuffer") {
+    return MainInstance.download(
+      id ? `${PENILAIAN.DOWNLOAD}/${id}` : PENILAIAN.DOWNLOAD,
+      params,
+      type
+    );
+  },
   cancelReq() {
     return MainInstance.cancelRequest();
   },
