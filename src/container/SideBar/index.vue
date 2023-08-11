@@ -113,7 +113,7 @@ export default {
               to: { name: DIVISI.BROWSE },
             },
             {
-              title: "Data Project",
+              title: "Data Proyek",
               to: { name: PROJEK.BROWSE },
             },
             {

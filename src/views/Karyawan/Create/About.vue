@@ -103,8 +103,8 @@
       </v-row>
       <v-row>
         <v-col cols="12" xs="12" sm="6">
-          <p class="mb-3 title-input">Projek</p>
-          <v-select v-model="payload.projek" :items="listProjek" hide-details filled solo label="Pilih Projek" clearable
+          <p class="mb-3 title-input">Proyek</p>
+          <v-select v-model="payload.projek" :items="listProjek" hide-details filled solo label="Pilih Proyek" clearable
             item-text="namaProjek" item-value="projek_id" return-object />
         </v-col>
         <v-col cols="12" xs="12" sm="6">
@@ -233,18 +233,47 @@ export default {
   },
   methods: {
     handleBack() {
-      this.$router.back();
+      this.$router.replace({
+        name: KARYAWAN.BROWSE
+      })
     },
     filesChange(file) {
-      this.payload.files = file[0];
-      const doc = document.getElementById("preview-photo");
-      this.createBase64Image(this.payload.files).then((e) => {
-        doc.style.background = "none";
-        doc.style.backgroundImage = 'url("' + e.target.result + '")';
-        doc.style.backgroundPosition = "center";
-        doc.style.backgroundRepeat = "no-repeat";
-        doc.style.backgroundSize = "contain";
-      });
+      let formData = new FormData();
+      formData.append("file", file[0]);
+      KaryawanService.uploadPhoto(formData, {
+        fileName: file[0].name.split(' ').join('_')
+      })
+        .then(({ data: { result, message } }) => {
+          if (message == "OK") {
+            this.payload.image = result.imageUri
+            const doc = document.getElementById("preview-photo");
+            doc.style.background = "none";
+            doc.style.backgroundImage = 'url("' + result.imageUri + '")';
+            doc.style.backgroundPosition = "center";
+            doc.style.backgroundRepeat = "no-repeat";
+            doc.style.backgroundSize = "contain";
+
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message: `Berhasil Upload Photo`,
+              color: "success",
+            });
+          } else {
+            this.$store.commit("snackbar/setSnack", {
+              show: true,
+              message: `Gagal Upload Photo`,
+              color: "error",
+            });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$store.commit("snackbar/setSnack", {
+            show: true,
+            message: `Gagal Upload Photo`,
+            color: "error",
+          });
+        })
     },
     getDetail() {
       this.$emit("handleLoading", true);
@@ -273,26 +302,18 @@ export default {
                 namaDivisi: result.namaDivisi,
               },
               noKTP: result.no_ktp,
-              noNPWP: result.npwp,
+              noNPWP: result.npwp
               // tanggalMasuk: result.tanggal_masuk
             };
 
-            // if (data.image) {
-            //   fetch(data.image)
-            //     .then((response) => response.blob())
-            //     .then((blob) => {
-            //       this.createBase64Image(blob).then((e) => {
-            //         this.payload.files = blob;
-            //         const doc = document.getElementById("preview-photo");
-            //         doc.style.background = "none";
-            //         doc.style.backgroundImage =
-            //           'url("' + e.target.result + '")';
-            //         doc.style.backgroundPosition = "center";
-            //         doc.style.backgroundRepeat = "no-repeat";
-            //         doc.style.backgroundSize = "contain";
-            //       });
-            //     });
-            // }
+            const doc = document.getElementById("preview-photo");
+            doc.style.background = "none";
+            doc.style.backgroundImage =
+              'url("' + result.image + '")';
+            doc.style.backgroundPosition = "center";
+            doc.style.backgroundRepeat = "no-repeat";
+            doc.style.backgroundSize = "contain";
+
           } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
@@ -345,7 +366,7 @@ export default {
         no_ktp: this.payload.noKTP,
         npwp: this.payload.noNPWP,
         tanggal_masuk,
-        image: "/image/cool.jpg",
+        image: this.payload.image,
       };
 
       KaryawanService.addKaryawan(payload)
@@ -418,7 +439,7 @@ export default {
         .catch((err) => {
           this.$store.commit("snackbar/setSnack", {
             show: true,
-            message: "Gagal Memuat Data Projek",
+            message: "Gagal Memuat Data Proyek",
             color: "error",
           });
           console.error(err);

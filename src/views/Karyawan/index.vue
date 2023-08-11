@@ -131,7 +131,7 @@ export default {
         { text: "Divisi", value: "namaDivisi", sortable: false },
         { text: "Jabatan", value: "jabatan", sortable: false },
         { text: "Status Karyawan", value: "status_karyawan", sortable: false },
-        { text: "Projek", value: "namaProjek", sortable: false },
+        { text: "Proyek", value: "namaProjek", sortable: false },
         { text: "No Telpon", value: "no_telpon", sortable: false },
         { text: "Aksi", value: "action", sortable: false },
       ],

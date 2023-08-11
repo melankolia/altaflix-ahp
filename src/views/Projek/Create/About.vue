@@ -12,11 +12,11 @@
         </div>
         <p class="header-title-input mb-1">Input Tabel</p>
         <p class="header-subtitle-input mb-1">
-          {{ isUpdate ? "Update" : 'Create' }} Projek
+          {{ isUpdate ? "Update" : 'Create' }} Proyek
         </p>
       </div>
     </div>
-    <ContentNotFound message="Data Projek Not Found" :loading="loading" v-if="!isAvailable && isUpdate">
+    <ContentNotFound message="Data Proyek Not Found" :loading="loading" v-if="!isAvailable && isUpdate">
       <template v-slot:action>
         <v-btn @click="() => getDetail()" depressed color="header" class="rounded-lg outlined-custom">
           <v-icon class="mr-1" small>mdi-reload</v-icon>
@@ -27,11 +27,11 @@
     <div v-else class="d-flex flex-column">
       <v-row>
         <v-col cols="12" xs="12" sm="6">
-          <p class="mb-3 title-input">Kode Projek</p>
+          <p class="mb-3 title-input">Kode Proyek</p>
           <v-text-field v-model="payload.code" hide-details filled solo label="Contoh : P0001" />
         </v-col>
         <v-col cols="12" xs="12" sm="6">
-          <p class="mb-3 title-input">Nama Projek</p>
+          <p class="mb-3 title-input">Nama Proyek</p>
           <v-text-field v-model="payload.nama" hide-details filled solo />
         </v-col>
       </v-row>
@@ -78,7 +78,9 @@ export default {
   },
   methods: {
     handleBack() {
-      this.$router.back();
+      this.$router.replace({
+        name: PROJEK.BROWSE
+      })
     },
     getListDivisi() {
       this.loadingList = true;
@@ -112,7 +114,7 @@ export default {
             this.$store.commit("snackbar/setSnack", {
               show: true,
               message:
-                result || "Gagal Memuat Data Projek",
+                result || "Gagal Memuat Data Proyek",
               color: "error",
             });
           }
@@ -120,7 +122,7 @@ export default {
         .catch((err) => {
           this.$store.commit("snackbar/setSnack", {
             show: true,
-            message: "Gagal Memuat Data Projek",
+            message: "Gagal Memuat Data Proyek",
             color: "error",
           });
           console.error(err);
@@ -137,7 +139,7 @@ export default {
           if (message == "OK") {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message: "Berhasil Menyimpan Data Projek",
+              message: "Berhasil Menyimpan Data Proyek",
               color: "success",
             });
             this.$router.replace({ name: PROJEK.BROWSE });
@@ -150,7 +152,7 @@ export default {
             this.$store.commit("snackbar/setSnack", {
               show: true,
               message:
-                result || "Gagal Menyimpan Data Projek",
+                result || "Gagal Menyimpan Data Proyek",
               color: "error",
             });
           }
@@ -159,7 +161,7 @@ export default {
           console.error(err);
           this.$store.commit("snackbar/setSnack", {
             show: true,
-            message: "Gagal Menyimpan Data Projek",
+            message: "Gagal Menyimpan Data Proyek",
             color: "error",
           });
         })

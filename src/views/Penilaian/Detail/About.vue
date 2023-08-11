@@ -155,15 +155,15 @@ export default {
               jabatan: result.namaJabatan,
             })
 
-            // if (data.image) {
-            //   // Binding Image
-            //   const doc = document.getElementById("preview-photo");
-            //   doc.style.background = "none";
-            //   doc.style.backgroundImage = 'url("' + data.image + '")';
-            //   doc.style.backgroundPosition = "center";
-            //   doc.style.backgroundRepeat = "no-repeat";
-            //   doc.style.backgroundSize = "contain";
-            // }
+            if (result.image) {
+              // Binding Image
+              const doc = document.getElementById("preview-photo");
+              doc.style.background = "none";
+              doc.style.backgroundImage = 'url("' + result.image + '")';
+              doc.style.backgroundPosition = "center";
+              doc.style.backgroundRepeat = "no-repeat";
+              doc.style.backgroundSize = "contain";
+            }
           } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,

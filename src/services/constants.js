@@ -46,6 +46,7 @@ export const KARYAWAN = {
   DETAIL: `${karyawan}`,
   DELETE: `${karyawan}`,
   LOV: `${karyawan}/nilai`,
+  UPLOAD_PHOTO: `${karyawan}/upload_photo`
 };
 
 const perhitungan = "/perhitungan";

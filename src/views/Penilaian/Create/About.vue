@@ -15,9 +15,7 @@
           Input Nilai Karyawan
         </p>
       </div>
-      <div id="preview-photo" class="picture-border rounded-lg" @click="$refs.file.click()">
-        <input type="file" ref="file" style="display: none" accept="image/*" @change="filesChange($event.target.files)" />
-      </div>
+      <div id="preview-photo" class="picture-border rounded-lg mr-4" />
     </div>
     <div class="d-flex flex-row justify-space-between table-border rounded-lg py-8 px-4 my-4">
       <div class="d-flex flex-column mr-4 table-border rounded-lg pa-4" style="width: 40%;">
@@ -49,7 +47,7 @@
             <v-text-field v-model="payload.karyawan.jabatan" disabled hide-details filled solo />
           </v-col>
           <v-col cols="12" xs="12" sm="6">
-            <p class="mb-3 title-input">Projek</p>
+            <p class="mb-3 title-input">Proyek</p>
             <v-text-field v-model="payload.karyawan.namaProjek" disabled hide-details filled solo />
           </v-col>
         </v-row>
@@ -172,18 +170,8 @@ export default {
   },
   methods: {
     handleBack() {
-      this.$router.back();
-    },
-    filesChange(file) {
-      this.payload.files = file[0];
-      const doc = document.getElementById("preview-photo");
-      this.createBase64Image(this.payload.files).then((e) => {
-        console.log(e.target.result);
-        doc.style.background = "none";
-        doc.style.backgroundImage = 'url("' + e.target.result + '")';
-        doc.style.backgroundPosition = "center";
-        doc.style.backgroundRepeat = "no-repeat";
-        doc.style.backgroundSize = "contain";
+      this.$router.replace({
+        name: PENILAIAN.BROWSE
       });
     },
     getDetail() {
@@ -197,6 +185,7 @@ export default {
               nilai_id: result.nilai_id,
               noPenilaian: result.noPenilaian,
               karyawan: {
+                image: result.image,
                 karyawan_id: result.karyawan_id,
                 nik: result.nik,
                 nama: result.namaKaryawan,
@@ -433,6 +422,15 @@ export default {
           // console.log(date1);
           const dateNow = date1.diff(date2, ["years"]);
           this.payload.karyawan.lama_kerja = dateNow.years.toFixed(0);
+        }
+
+        if (val.image) {
+          const doc = document.getElementById("preview-photo");
+          doc.style.background = "none";
+          doc.style.backgroundImage = 'url("' + val.image + '")';
+          doc.style.backgroundPosition = "center";
+          doc.style.backgroundRepeat = "no-repeat";
+          doc.style.backgroundSize = "contain";
         }
       }, deep: true
     },

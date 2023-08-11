@@ -10,15 +10,15 @@
       <v-btn @click="handleAdd" depressed color="primary" class="rounded-lg">
         <p class="header-button-title ma-0">
           <v-icon class="mr-1" small>mdi-plus</v-icon>
-          <span> Tambah Projek</span>
+          <span> Tambah Proyek</span>
         </p>
       </v-btn>
     </div>
     <div class="d-flex flex-row justify-space-between mb-9 mt-1">
       <div>
-        <p class="header-title mb-1">Tabel Projek</p>
+        <p class="header-title mb-1">Tabel Proyek</p>
         <p class="header-subtitle mb-1">
-          Daftar Projek PT Altaflix
+          Daftar Proyek PT Altaflix
         </p>
       </div>
     </div>
@@ -110,12 +110,12 @@ export default {
       sortBy: "projek.nama ASC",
       itemSortBy: [
         {
-          text: "a-z Nama Projek",
+          text: "a-z Nama Proyek",
           value: "projek.nama ASC",
           icon: "mdi-sort-ascending",
         },
         {
-          text: "z-a Nama Projek",
+          text: "z-a Nama Proyek",
           value: "projek.nama DESC",
           icon: "mdi-sort-descending",
         },
@@ -132,9 +132,9 @@ export default {
       ],
       headers: [
         { text: "No", value: "nomor", sortable: false },
-        { text: "Kode Projek", value: "code", sortable: false },
+        { text: "Kode Proyek", value: "code", sortable: false },
         {
-          text: "Nama Projek",
+          text: "Nama Proyek",
           value: "namaProjek",
           sortable: false,
           width: "321px",
@@ -188,14 +188,14 @@ export default {
           if (message == "OK") {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message: `Berhasil Menghapus data Projek`,
+              message: `Berhasil Menghapus data Proyek`,
               color: "success",
             });
             this.getList();
           } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message: result || `Gagal Menghapus data Projek`,
+              message: result || `Gagal Menghapus data Proyek`,
               color: "error",
             });
           }
@@ -204,7 +204,7 @@ export default {
           console.error(err);
           this.$store.commit("snackbar/setSnack", {
             show: true,
-            message: `Gagal Menghapus data Projek`,
+            message: `Gagal Menghapus data Proyek`,
             color: "error",
           });
         })
@@ -234,7 +234,7 @@ export default {
           } else {
             this.$store.commit("snackbar/setSnack", {
               show: true,
-              message: message || "Gagal Memuat Data Semua Projek",
+              message: message || "Gagal Memuat Data Semua Proyek",
               color: "error",
             });
           }

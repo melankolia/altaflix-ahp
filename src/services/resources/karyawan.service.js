@@ -14,6 +14,9 @@ const KaryawanService = {
   addKaryawan(data) {
     return MainInstance.post(KARYAWAN.CREATE, data);
   },
+  uploadPhoto(data, params) {
+    return MainInstance.post(KARYAWAN.UPLOAD_PHOTO, data, { params });
+  },
   deleteKaryawan(data) {
     return MainInstance.deleteSlug(KARYAWAN.DELETE, data);
   },
