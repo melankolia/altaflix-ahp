@@ -107,8 +107,18 @@ export default {
   data() {
     return {
       search: "",
-      sortBy: "projek.nama ASC",
+      sortBy: "code ASC",
       itemSortBy: [
+        {
+          text: "a-z Kode",
+          value: "code ASC",
+          icon: "mdi-sort-ascending",
+        },
+        {
+          text: "z-a Kode",
+          value: "code DESC",
+          icon: "mdi-sort-descending",
+        },
         {
           text: "a-z Nama Proyek",
           value: "projek.nama ASC",
@@ -117,16 +127,6 @@ export default {
         {
           text: "z-a Nama Proyek",
           value: "projek.nama DESC",
-          icon: "mdi-sort-descending",
-        },
-        {
-          text: "a-z Kode",
-          value: "projek.code ASC",
-          icon: "mdi-sort-ascending",
-        },
-        {
-          text: "z-a Kode",
-          value: "projek.code DESC",
           icon: "mdi-sort-descending",
         },
       ],

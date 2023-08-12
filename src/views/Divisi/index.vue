@@ -98,8 +98,18 @@ export default {
   data() {
     return {
       search: "",
-      sortBy: "nama ASC",
+      sortBy: "code ASC",
       itemSortBy: [
+        {
+          text: "a-z Kode",
+          value: "code ASC",
+          icon: "mdi-sort-ascending",
+        },
+        {
+          text: "z-a Kode",
+          value: "code DESC",
+          icon: "mdi-sort-descending",
+        },
         {
           text: "a-z Nama",
           value: "nama ASC",
