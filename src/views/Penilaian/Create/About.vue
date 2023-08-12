@@ -32,13 +32,13 @@
         </v-row>
         <v-row>
           <v-col cols="12" xs="12" sm="6">
-            <p class="mb-3 title-input">NIK</p>
+            <p class="mb-3 title-input">Nama</p>
             <v-autocomplete :disabled="isUpdate" :loading="loadingNIK" :items="itemsKaryawan" v-model="payload.karyawan"
               hide-details filled solo item-text="nama" return-object />
           </v-col>
           <v-col cols="12" xs="12" sm="6">
-            <p class="mb-3 title-input">Nama Lengkap</p>
-            <v-text-field v-model="payload.karyawan.nama" disabled hide-details filled solo />
+            <p class="mb-3 title-input">NIK</p>
+            <v-text-field v-model="payload.karyawan.nik" disabled hide-details filled solo />
           </v-col>
         </v-row>
         <v-row>
