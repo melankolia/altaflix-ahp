@@ -46,7 +46,7 @@
         <template #header="{ props }">
           <tr class="table-header">
             <th class="table-text-perhitungan text-start" v-for="(head, i) in props.headers"
-              :style="{ width: customWidth(head.value) }" :key="i" :class="{
+              :style="{ 'min-width': customWidth(head.value) }" :key="i" :class="{
                 'rounded-l-lg': i == isFirst,
                 'rounded-r-lg': i == isLast,
               }">
@@ -151,8 +151,8 @@ export default {
   methods: {
     customWidth(head) {
       if (head == "no") return "25px";
-      else if (head == "tglPenilaian") return "300px";
-      else if (head == "namaKaryawan") return "300px";
+      else if (head == "tglPenilaian") return "125px";
+      else if (head == "namaKaryawan") return "170px";
       else if (head == "tglPenilaian") return "120px";
     },
     handleCetakReport() {
