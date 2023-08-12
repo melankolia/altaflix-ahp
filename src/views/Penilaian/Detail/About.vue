@@ -133,7 +133,21 @@ export default {
       return this.items?.nik;
     },
     tempat_tanggal_lahir() {
-      return `${this.items?.tempat_lahir}, ${this.items?.tanggal_lahir}`
+      return `${this.items.tempat_lahir}, ${this.tanggalLahir}`;
+    },
+    tanggalLahir() {
+      if (this.items.tanggal_lahir) {
+        return this.$DateTime
+          .fromISO(this.items.tanggal_lahir)
+          .toFormat("dd LLLL yyyy");
+      } else return "-";
+    },
+    tanggalMasuk() {
+      if (this.items.tanggal_masuk) {
+        return this.$DateTime
+          .fromISO(this.items.tanggal_masuk)
+          .toFormat("dd LLLL yyyy");
+      } else return "-";
     },
     persentase() {
       return `${(this.items?.nilaiHasil * 100).toFixed(0) || '-'} %`

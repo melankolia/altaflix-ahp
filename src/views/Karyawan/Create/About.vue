@@ -289,7 +289,7 @@ export default {
               nama: result.nama,
               jenisKelamin: result.jenis_kelamin,
               tempatLahir: result.tempat_lahir,
-              // tanggalLahir: result.tanggal_lahir,
+              tanggalLahir: result.tanggal_lahir,
               agama: result.agama,
               statusPernikahan: result.status_pernikahan,
               alamat: result.alamat,
@@ -303,8 +303,8 @@ export default {
                 namaDivisi: result.namaDivisi,
               },
               noKTP: result.no_ktp,
-              noNPWP: result.npwp
-              // tanggalMasuk: result.tanggal_masuk
+              noNPWP: result.npwp,
+              tanggalMasuk: result.tanggal_masuk
             };
 
             const doc = document.getElementById("preview-photo");
@@ -338,15 +338,6 @@ export default {
     },
     handleSubmit() {
       this.$emit("handleLoading", true);
-      const tanggal_lahir = this.$DateTime
-        .fromISO(this.payload.tanggalLahir)
-        .setLocale("id")
-        .toFormat("dd-MM-yyyy");
-
-      const tanggal_masuk = this.$DateTime
-        .fromISO(this.payload.tanggalMasuk)
-        .setLocale("id")
-        .toFormat("dd-MM-yyyy");
 
       const payload = {
         karyawan_id: this.payload.karyawan_id,
@@ -357,7 +348,7 @@ export default {
         nama: this.payload.nama,
         nik: this.payload.nik,
         tempat_lahir: this.payload.tempatLahir,
-        tanggal_lahir,
+        tanggal_lahir: this.payload.tanggalLahir,
         status_pernikahan: this.payload.statusPernikahan,
         no_telpon: this.payload.noTelp,
         pendidikan_terakhir: this.payload.pendidikanTerakhir,
@@ -366,7 +357,7 @@ export default {
         divisi_id: this.payload.projek?.divisi_id,
         no_ktp: this.payload.noKTP,
         npwp: this.payload.noNPWP,
-        tanggal_masuk,
+        tanggal_masuk: this.payload.tanggalMasuk,
         image: this.payload.image,
       };
 

@@ -103,7 +103,7 @@
         <tr>
           <td>Tanggal Masuk</td>
           <td class="text-right text-sub">
-            {{ items.tanggal_masuk || "-" }}
+            {{ tanggalMasuk || "-" }}
           </td>
         </tr>
       </tbody>
@@ -153,7 +153,21 @@ export default {
       return !!this.id;
     },
     tempat_tanggal_lahir() {
-      return `${this.items.tempat_lahir}, ${this.items.tanggal_lahir}`;
+      return `${this.items.tempat_lahir}, ${this.tanggalLahir}`;
+    },
+    tanggalLahir() {
+      if (this.items.tanggal_lahir) {
+        return this.$DateTime
+          .fromISO(this.items.tanggal_lahir)
+          .toFormat("dd LLLL yyyy");
+      } else return "-";
+    },
+    tanggalMasuk() {
+      if (this.items.tanggal_masuk) {
+        return this.$DateTime
+          .fromISO(this.items.tanggal_masuk)
+          .toFormat("dd LLLL yyyy");
+      } else return "-";
     },
   },
   methods: {
