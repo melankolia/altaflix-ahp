@@ -154,6 +154,9 @@ export default {
       else if (head == "tglPenilaian") return "125px";
       else if (head == "namaKaryawan") return "170px";
       else if (head == "tglPenilaian") return "120px";
+      else if (head == "namaJabatan") return "170px";
+      else if (head == "namaDivisi") return "170px";
+
     },
     handleCetakReport() {
       this.loadingReport = true;
