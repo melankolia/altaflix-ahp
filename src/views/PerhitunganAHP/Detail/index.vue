@@ -42,7 +42,7 @@
                 </td>
 
                 <template v-for="(e, i) in xIndex">
-                  <td v-if="true" class="text-center" :key="`key-${i}`">
+                  <td v-if="true" class="text-center" :key="`key-${i}`" style="padding: 0 2px">
                     <v-text-field :disabled="editMode ? i < item.no : !editMode" v-model="item[e]" hide-details
                       single-line small dense />
                   </td>
@@ -52,7 +52,7 @@
             <template #body.append="{ items }">
               <tr>
                 <td class="text-center font-weight-medium">Jumlah</td>
-                <td class="text-center" v-for="(e, i) in items" :key="`jumlah-${i}`">
+                <td class="text-center" v-for="(e, i) in items" :key="`jumlah-${i}`" style="padding: 0 2px">
                   <v-text-field v-model="items[i].jumlah" disabled hide-details single-line small dense />
                 </td>
               </tr>
@@ -101,7 +101,7 @@
                 </p>
               </td>
               <template v-for="(e) in headersHasil">
-                <td v-if="e.value != 'kriteria'" class="text-center" :key="`key-${e.value}`">
+                <td v-if="e.value != 'kriteria'" class="text-center" :key="`key-${e.value}`" style="padding: 0 2px">
                   <v-text-field v-model="item[e.value]" disabled hide-details single-line small dense />
                 </td>
               </template>
@@ -133,7 +133,7 @@
                     </p>
                   </td>
                   <template v-for="(e, i) in item">
-                    <td v-if="i != 'kriteria'" class="text-center" :key="`key-${i}`">
+                    <td v-if="i != 'kriteria'" class="text-center" :key="`key-${i}`" style="padding: 0 2px; min-width: 100px;">
                       <v-text-field v-model="item[i]" disabled="" hide-details single-line small dense />
                     </td>
                   </template>
@@ -170,7 +170,7 @@
                     </p>
                   </td>
                   <template v-for="(e, i) in item">
-                    <td class="text-center" v-if="i != 'kriteria' && i != 'jumlah'" :key="`key-${i}`">
+                    <td class="text-center" v-if="i != 'kriteria' && i != 'jumlah'" :key="`key-${i}`" style="padding: 0 2px;">
                       <v-text-field v-model="item[i]" disabled hide-details single-line small dense />
                     </td>
                   </template>
@@ -179,7 +179,7 @@
               <template #body.append>
                 <tr>
                   <td class="text-center">Toleransi &lt;= 0.1</td>
-                  <td class="text-center">
+                  <td class="text-center" style="padding: 0 2px;">
                     <v-text-field v-model="toleransi" disabled hide-details single-line small dense />
                   </td>
                 </tr>
