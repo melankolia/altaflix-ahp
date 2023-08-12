@@ -185,7 +185,7 @@ export default {
       listPernikahan: ["Kawin", "Belum Kawin", "Cerai Hidup", "Cerai Mati"],
 
       // Pendidikan
-      listPendidikan: ["Strata 1", "Starata 2", "Starata 3", "SMA", "SMK"],
+      listPendidikan: ["Strata 1", "Strata 2", "Strata 3", "SMA", "SMK"],
 
       // Status Karyawan
       listStatusKaryawan: ["Kontrak", "Tetap"],
