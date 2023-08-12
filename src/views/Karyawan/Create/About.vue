@@ -245,10 +245,11 @@ export default {
       })
         .then(({ data: { result, message } }) => {
           if (message == "OK") {
-            this.payload.image = result.imageUri
+            const imageUri = result.imageUri.replaceAll("\\", "/");
+            this.payload.image = imageUri;
             const doc = document.getElementById("preview-photo");
             doc.style.background = "none";
-            doc.style.backgroundImage = 'url("' + result.imageUri + '")';
+            doc.style.backgroundImage = 'url("' + imageUri + '")';
             doc.style.backgroundPosition = "center";
             doc.style.backgroundRepeat = "no-repeat";
             doc.style.backgroundSize = "contain";
