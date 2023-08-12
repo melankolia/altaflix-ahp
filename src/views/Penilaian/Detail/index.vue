@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex flex-column ml-7 mt-4 mb-7 mr-12">
     <div class="d-flex flex-row justify-space-between mb-12">
-      <v-btn @click="$router.back()" depressed color="header" class="rounded-lg mr-4 outlined-custom">
+      <v-btn @click="handleBack" depressed color="header" class="rounded-lg mr-4 outlined-custom">
         <p class="header-button-back ma-0">
           <v-icon class="mr-1" small>mdi-chevron-left</v-icon>
           <span> Kembali </span>
@@ -86,6 +86,11 @@ export default {
   computed: {
   },
   methods: {
+    handleBack() {
+      this.$router.replace({
+        name: PENILAIAN.BROWSE
+      })
+    },
     handleItem(e) {
       this.items = {
         ...this.items,

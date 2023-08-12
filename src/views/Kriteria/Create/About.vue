@@ -220,7 +220,9 @@ export default {
       this.payload.subkriteria.splice(e.no, 1, { ...e })
     },
     handleBack() {
-      this.$router.back();
+      this.$router.replace({
+        name: KRITERIA.BROWSE
+      })
     },
     handleAdd() {
       this.addMode = true;

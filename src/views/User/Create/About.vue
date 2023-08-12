@@ -53,7 +53,6 @@
 <script>
 import { USER } from "@/router/name.types";
 import UserService from "@/services/resources/user.service";
-import { PROJEK } from "../../../router/name.types";
 const ContentNotFound = () => import("../../../components/Content/NotFound");
 
 export default {
@@ -78,7 +77,7 @@ export default {
   methods: {
     handleBack() {
       this.$router.replace({
-        name: PROJEK.BROWSE
+        name: USER.BROWSE
       })
     },
     getDetail() {
