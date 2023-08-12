@@ -170,11 +170,9 @@ export default {
             });
             if (result.image) {
               // Binding Image
-              const imageUri = result.imageUri.replaceAll("\\", "/");
-              this.payload.image = imageUri;
               const doc = document.getElementById("preview-photo");
               doc.style.background = "none";
-              doc.style.backgroundImage = 'url("' + imageUri + '")';
+              doc.style.backgroundImage = 'url("' + result.image + '")';
               doc.style.backgroundPosition = "center";
               doc.style.backgroundRepeat = "no-repeat";
               doc.style.backgroundSize = "contain";
