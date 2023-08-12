@@ -151,6 +151,7 @@ export default {
   methods: {
     customWidth(head) {
       if (head == "no") return "25px";
+      else if (head == "tglPenilaian") return "200px";
       else if (head == "namaKaryawan") return "200px";
       else if (head == "tglPenilaian") return "120px";
     },
