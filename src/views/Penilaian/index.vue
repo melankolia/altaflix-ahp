@@ -112,13 +112,13 @@ export default {
         },
         {
           text: "a-z Rangking",
-          value: "nilai_hasil ASC",
-          icon: "mdi-sort-descending",
+          value: "nilai_hasil DESC",
+          icon: "mdi-sort-ascending",
         },
         {
           text: "z-a Rangking",
-          value: "nilai_hasil DESC",
-          icon: "mdi-sort-ascending",
+          value: "nilai_hasil ASC",
+          icon: "mdi-sort-descending",
         },
       ],
       headers: [
