@@ -5,12 +5,20 @@
         <p class="header-title mb-1">Tabel Karyawan PT Altaflix</p>
         <p class="header-subtitle mb-1">Daftar seluruh karyawan</p>
       </div>
-      <v-btn @click="handleAdd" depressed color="primary" class="rounded-lg">
-        <p class="header-button-title ma-0">
-          <v-icon class="mr-1" small>mdi-plus</v-icon>
-          <span> Tambah Karyawan </span>
-        </p>
-      </v-btn>
+      <div class="d-flex flex-row">
+        <v-btn @click="handleAdd" depressed color="primary" class="rounded-lg mr-2">
+          <p class="header-button-title ma-0">
+            <v-icon class="mr-1" small>mdi-plus</v-icon>
+            <span> Tambah Karyawan </span>
+          </p>
+        </v-btn>
+        <v-btn :loading="loadingReport" @click="handleCetakReport" depressed color="primary" class="rounded-lg">
+          <p class="header-button-title ma-0">
+            <v-icon class="mr-1">mdi-download-box-outline</v-icon>
+            <span> Cetak Laporan </span>
+          </p>
+        </v-btn>
+      </div>
     </div>
     <v-tabs v-model="tab" color="tabMenu">
       <v-tab v-for="item in tabs" :key="item.code">
@@ -144,13 +152,20 @@ export default {
       tabs: [
         { text: "Lihat Semua Divisi", code: "" }
       ],
-      totalItem: 10,
+      totalItem: 100,
       totalPage: 1,
-      rowsPerPageItems: [10, 20, 50, 100],
+      rowsPerPageItems: [100],
       doubleClickPrevent: false,
+      loadingReport: false
     };
   },
   methods: {
+    handleCetakReport() {
+      this.loadingReport = true;
+      setTimeout(() => {
+        this.loadingReport = false;
+      }, 1500);
+    },
     handleAdd() {
       this.$router.push({
         name: KARYAWAN.CREATE,

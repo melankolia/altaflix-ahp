@@ -5,12 +5,20 @@
         <p class="header-title mb-1">Tabel Nilai Karyawan PT Altaflix</p>
         <p class="header-subtitle mb-1">Daftar Nilai seluruh karyawan</p>
       </div>
-      <v-btn @click="handleAdd" depressed color="primary" class="rounded-lg">
-        <p class="header-button-title ma-0">
-          <v-icon class="mr-1" small>mdi-plus</v-icon>
-          <span> Input Penilaian Karyawan </span>
-        </p>
-      </v-btn>
+      <div class="d-flex flex-row">
+        <v-btn @click="handleAdd" depressed color="primary" class="rounded-lg mr-2">
+          <p class="header-button-title ma-0">
+            <v-icon class="mr-1" small>mdi-plus</v-icon>
+            <span> Input Penilaian Karyawan </span>
+          </p>
+        </v-btn>
+        <v-btn :loading="loadingReport" @click="handleCetakReport" depressed color="primary" class="rounded-lg">
+          <p class="header-button-title ma-0">
+            <v-icon class="mr-1">mdi-download-box-outline</v-icon>
+            <span> Cetak Laporan </span>
+          </p>
+        </v-btn>
+      </div>
     </div>
     <v-tabs v-model="tab" color="tabMenu">
       <v-tab v-for="item in tabs" :key="item.code">
@@ -72,14 +80,6 @@
           <CustomFooter :options="options" :props="props" :totalPage="totalPage" />
         </template>
       </v-data-table>
-    </div>
-    <div class="d-flex flex-row justify-end my-6">
-      <v-btn :loading="loadingReport" @click="handleCetakReport" depressed color="primary" class="rounded-lg" large>
-        <p class="header-button-title ma-0">
-          <v-icon class="mr-1">mdi-download-box-outline</v-icon>
-          <span> Cetak Laporan </span>
-        </p>
-      </v-btn>
     </div>
   </div>
 </template>

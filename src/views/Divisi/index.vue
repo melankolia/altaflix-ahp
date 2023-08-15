@@ -5,12 +5,20 @@
         <p class="header-title mb-1">Tabel Divisi</p>
         <p class="header-subtitle mb-1">Daftar Divisi PT Altaflix</p>
       </div>
-      <v-btn @click="handleAdd" depressed color="primary" class="rounded-lg">
-        <p class="header-button-title ma-0">
-          <v-icon class="mr-1" small>mdi-plus</v-icon>
-          <span> Tambah Divisi </span>
-        </p>
-      </v-btn>
+      <div class="d-flex flex-row">
+        <v-btn @click="handleAdd" depressed color="primary" class="rounded-lg mr-2">
+          <p class="header-button-title ma-0">
+            <v-icon class="mr-1" small>mdi-plus</v-icon>
+            <span> Tambah Divisi </span>
+          </p>
+        </v-btn>
+        <v-btn :loading="loadingReport" @click="handleCetakReport" depressed color="primary" class="rounded-lg">
+          <p class="header-button-title ma-0">
+            <v-icon class="mr-1">mdi-download-box-outline</v-icon>
+            <span> Cetak Laporan </span>
+          </p>
+        </v-btn>
+      </div>
     </div>
     <div class="d-flex flex-row justify-space-between header my-6 pa-3 rounded-lg">
       <div style="width: 288px">
@@ -136,9 +144,16 @@ export default {
       totalPage: 1,
       rowsPerPageItems: [10, 20, 50, 100],
       doubleClickPrevent: false,
+      loadingReport: false
     };
   },
   methods: {
+    handleCetakReport() {
+      this.loadingReport = true;
+      setTimeout(() => {
+        this.loadingReport = false;
+      }, 1500);
+    },
     customWidth(head) {
       return head;
     },
