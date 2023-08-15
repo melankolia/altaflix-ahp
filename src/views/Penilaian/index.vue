@@ -98,7 +98,7 @@ export default {
   data() {
     return {
       search: "",
-      sortBy: "nilai_hasil ASC",
+      sortBy: "nilai_hasil DESC",
       itemSortBy: [
         {
           text: "a-z Nama",
