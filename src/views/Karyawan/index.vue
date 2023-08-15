@@ -162,9 +162,27 @@ export default {
   methods: {
     handleCetakReport() {
       this.loadingReport = true;
-      setTimeout(() => {
-        this.loadingReport = false;
-      }, 1500);
+      KaryawanService.downloadFile()
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute(
+            "download",
+            `Laporan Data Seluruh Karyawan.pdf`
+          );
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch(() => {
+          this.$store.commit("snackbar/setSnack", {
+            show: true,
+            message:
+              "Gagal Download Data Laporan",
+            color: "error",
+          });
+        })
+        .finally(() => this.loadingReport = false)
     },
     handleAdd() {
       this.$router.push({

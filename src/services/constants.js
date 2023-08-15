@@ -13,6 +13,7 @@ export const DIVISI = {
   BROWSE: `${divisi}`,
   DETAIL: `${divisi}`,
   DELETE: `${divisi}`,
+  REPORT: `${divisi}/report`
 };
 
 const projek = "/projek";
@@ -21,6 +22,7 @@ export const PROJEK = {
   BROWSE: `${projek}`,
   DETAIL: `${projek}`,
   DELETE: `${projek}`,
+  REPORT: `${projek}/report`
 };
 
 const kriteria = "/kriteria";
@@ -46,7 +48,11 @@ export const KARYAWAN = {
   DETAIL: `${karyawan}`,
   DELETE: `${karyawan}`,
   LOV: `${karyawan}/nilai`,
-  UPLOAD_PHOTO: `${karyawan}/upload_photo`
+  UPLOAD_PHOTO: `${karyawan}/upload_photo`,
+  REPORT: {
+    ALL: `${karyawan}/report`,
+    DETAIL: `${karyawan}/report`
+  }
 };
 
 const perhitungan = "/perhitungan";

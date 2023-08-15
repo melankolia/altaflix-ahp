@@ -17,6 +17,13 @@ const DivisiService = {
   cancelReq() {
     return MainInstance.cancelRequest();
   },
+  downloadFile(id, params = {}, type = "arraybuffer") {
+    return MainInstance.download(
+      `${DIVISI.REPORT}`,
+      params,
+      type
+    );
+  },
 };
 
 export default DivisiService;

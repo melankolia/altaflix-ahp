@@ -23,6 +23,13 @@ const KaryawanService = {
   cancelReq() {
     return MainInstance.cancelRequest();
   },
+  downloadFile(id, params = {}, type = "arraybuffer") {
+    return MainInstance.download(
+      id ? `${KARYAWAN.REPORT.DETAIL}/${id}` : KARYAWAN.REPORT.ALL,
+      params,
+      type
+    );
+  },
 };
 
 export default KaryawanService;

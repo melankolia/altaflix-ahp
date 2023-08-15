@@ -8,18 +8,18 @@
         </p>
       </v-btn>
       <div>
-        <v-btn @click="handleEdit" depressed color="primary" class="rounded-lg mr-4">
+        <v-btn @click="handleEdit" depressed color="primary" class="rounded-lg mr-2">
           <p class="header-button-title ma-0">
             <v-icon class="mr-1" small>mdi-square-edit-outline</v-icon>
             <span> Edit Data </span>
           </p>
         </v-btn>
-        <!-- <v-btn depressed class="rounded-lg outlined-custom">
-          <p class="header-button-export ma-0">
-            <v-icon class="mr-1" small>mdi-download</v-icon>
-            <span> Download Detail Guru </span>
+        <v-btn :loading="loadingReport" @click="handleCetakReport" depressed color="primary" class="rounded-lg">
+          <p class="header-button-title ma-0">
+            <v-icon class="mr-1">mdi-download-box-outline</v-icon>
+            <span> Cetak Laporan </span>
           </p>
-        </v-btn> -->
+        </v-btn>
       </div>
     </div>
     <div class="d-flex flex-row justify-space-between mb-9 mt-1">
@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import KaryawanService from "@/services/resources/karyawan.service";
 import { KARYAWAN } from "../../../router/name.types";
 const About = () => import("@/views/Karyawan/Detail/About.vue");
 
@@ -62,6 +63,7 @@ export default {
   },
   data() {
     return {
+      id: this.$route.params?.karyawanId,
       items: {
         nama: null,
         jabatan: null
@@ -70,11 +72,36 @@ export default {
       tabs: [
         { text: "Tentang Diri Karyawan", component: "About" },
       ],
+      loadingReport: false
     };
   },
   computed: {
   },
   methods: {
+    handleCetakReport() {
+      this.loadingReport = true;
+      KaryawanService.downloadFile(this.id)
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute(
+            "download",
+            `Laporan Data Karyawan Detail.pdf`
+          );
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch(() => {
+          this.$store.commit("snackbar/setSnack", {
+            show: true,
+            message:
+              "Gagal Download Data Laporan",
+            color: "error",
+          });
+        })
+        .finally(() => this.loadingReport = false)
+    },
     handleBack() {
       this.$router.replace({
         name: KARYAWAN.BROWSE

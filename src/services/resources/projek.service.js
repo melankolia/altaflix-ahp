@@ -17,6 +17,13 @@ const ProjekService = {
   cancelReq() {
     return MainInstance.cancelRequest();
   },
+  downloadFile(id, params = {}, type = "arraybuffer") {
+    return MainInstance.download(
+      `${PROJEK.REPORT}`,
+      params,
+      type
+    );
+  },
 };
 
 export default ProjekService;
